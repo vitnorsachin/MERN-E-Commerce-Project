@@ -42,13 +42,15 @@ const NavBar = ({ children }) => {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center">
-                <div className="shrink-0">
-                  <img
-                    alt="Your Company"
-                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                    className="size-8"
-                  />
-                </div>
+                <Link to="/">
+                  <div className="shrink-0">
+                    <img
+                      alt="Your Company"
+                      src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+                      className="size-8"
+                    />
+                  </div>
+                </Link>
                 <div className="hidden md:block">
                   <div className="ml-10 flex items-baseline space-x-4">
                     {navigation.map((item) => (
@@ -173,12 +175,12 @@ const NavBar = ({ children }) => {
                 <button
                   type="button"
                   className="cursor-pointer relative ml-auto shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden"
-                  >
+                >
                   <Link to="/cart">
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">View notifications</span>
-                  <ShoppingCartIcon aria-hidden="true" className="size-6" />
-                </Link>
+                    <span className="absolute -inset-1.5" />
+                    <span className="sr-only">View notifications</span>
+                    <ShoppingCartIcon aria-hidden="true" className="size-6" />
+                  </Link>
                 </button>
                 <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-red-600/10 ring-inset mb-7 -ml-3 z-10">
                   3
