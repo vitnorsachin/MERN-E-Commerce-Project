@@ -14,7 +14,6 @@ export function fetchProductsByFilters(filter) {
   let queryString = "";
   for (let key in filter) {
     queryString += `${key}=${filter[key]}&`;
-    console.log(queryString);
   }
   return new Promise(async (resolve) => {
     // TODO: we will not hardcoded server url
