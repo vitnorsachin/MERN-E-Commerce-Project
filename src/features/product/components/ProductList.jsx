@@ -527,7 +527,7 @@ function ProductGrid({ products }) {
                   key={product.id}
                   className="group relative border-solid p-2 border-2 border-gray-200 rounded-xl"
                 >
-                  <Link to="/product-detail">
+                  <Link to={`/product-detail/${product.id}`}>
                     <img
                       alt={product.title}
                       src={product.thumbnail}
