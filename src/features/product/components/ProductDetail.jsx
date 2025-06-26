@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
+import { ArrowRightIcon } from "@heroicons/react/20/solid";
+
 import { Radio, RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
 import { fetchProductByIdAsync, selectedProductById } from "../productSlice";
-import { useParams } from "react-router-dom";
+import { addToCartAsync } from "../../cart/cartSlice";
+import { selectLoggedInUser } from "../../auth/authSlice";
 
 // TODO : In server data we will add colors, sizes, highlights etc. to each product
 const colors = [
@@ -26,11 +30,11 @@ const sizes = [
   { name: "3XL", inStock: true },
 ];
 const highlights = [
-  'Hand cut and sewn localy',
+  "Hand cut and sewn localy",
   "Dyed with our proprietory colors",
   "Pre-washed & pre-shrunk",
-  "Ultra-soft 100% cotton"
-]
+  "Ultra-soft 100% cotton",
+];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -39,9 +43,15 @@ function classNames(...classes) {
 export default function ProductDetail() {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
-  const product = useSelector(selectedProductById);
   const dispatch = useDispatch();
+  const product = useSelector(selectedProductById);
+  const user = useSelector(selectLoggedInUser);
   const params = useParams();
+
+  const handleCart = (e) => {
+    e.preventDefault();
+    dispatch(addToCartAsync({ ...product, quantity: 1, user: user.id }));
+  };
 
   useEffect(() => {
     dispatch(fetchProductByIdAsync(params.id));
@@ -96,7 +106,7 @@ export default function ProductDetail() {
             <img
               src={product.images[0]}
               alt={product.images.title}
-              className="row-span-2 aspect-3/4 size-full rounded-lg object-cover max-lg:hidden"
+              className="row-span-2 aspect-3/4 size-full rounded-lg object-cover "
             />
             <img
               src={product.images[1]}
@@ -108,11 +118,6 @@ export default function ProductDetail() {
               alt={product.images.title}
               className="col-start-2 row-start-2 aspect-3/2 size-full rounded-lg object-cover max-lg:hidden"
             />
-            {/* <img
-              src={product.images[3]}
-              alt={product.images.title}
-              className="row-span-2 aspect-4/5 size-full object-cover sm:rounded-lg lg:aspect-3/4"
-            /> */}
           </div>
 
           {/* Product info */}
@@ -174,7 +179,6 @@ export default function ProductDetail() {
                               "size-8 appearance-none rounded-full forced-color-adjust-none checked:outline-2 checked:outline-offset-2 focus-visible:outline-3 focus-visible:outline-offset-3"
                             )}
                           />
-                          {console.log(option)}
                         </div>
                       ))}
                     </div>
@@ -246,15 +250,29 @@ export default function ProductDetail() {
 
                 <button
                   type="submit"
-                  className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
+                  className="cursor-pointer mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
+                  onClick={handleCart}
                 >
                   Add to Cart
                 </button>
+                <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
+                  <p>
+                    <Link to="/">
+                      <button
+                        type="button"
+                        onClick={() => setOpen(false)}
+                        className="ml-2 font-bold text-[16px] text-indigo-600 hover:text-indigo-500 cursor-pointer"
+                      >
+                        Continue Shopping<ArrowRightIcon className="inline h-5 w-8 text-black size-2" />
+                      </button>
+                    </Link>
+                  </p>
+                </div>
               </form>
             </div>
 
             {/* Description and details */}
-            <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pt-6 lg:pr-8 lg:pb-16">
+            <div className="py-5 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pt-6 lg:pr-8 lg:pb-16">
               <div>
                 <h3 className="sr-only">Description</h3>
 
@@ -273,10 +291,10 @@ export default function ProductDetail() {
                 <div className="mt-4">
                   <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
                     {highlights.map((highlight) => (
-                        <li key={highlight} className="text-gray-400">
-                          <span className="text-gray-600">{highlight}</span>
-                        </li>
-                      ))}
+                      <li key={highlight} className="text-gray-400">
+                        <span className="text-gray-600">{highlight}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>

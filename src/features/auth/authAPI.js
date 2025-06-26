@@ -10,7 +10,7 @@ export function createUser(userData) {
       headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
-    resolve(data);
+    resolve({data});
   });
 }
 
@@ -23,7 +23,7 @@ export function checkUser(loginInfo) {
     if (data.length) {
       if (password === data[0].password) {
         console.log(data);
-        resolve({ data: data[0] });
+        resolve(data[0]);
       } else {
         reject({ message: "Wrong credentials" });
       }
