@@ -2,7 +2,7 @@ import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
-import SingupPage from "./pages/SingupPage";
+import SignupPage from "./pages/SignupPage";
 import { CartPage } from "./pages/CartPage";
 import Checkout from "./pages/Checkout";
 import ProductDetailPage from "./pages/ProductDetailPage";
@@ -23,7 +23,7 @@ let router = createBrowserRouter([
   },
   {
     path: "/signup",
-    element: <SingupPage />,
+    element: <SignupPage />,
   },
   {
     path: "/cart",

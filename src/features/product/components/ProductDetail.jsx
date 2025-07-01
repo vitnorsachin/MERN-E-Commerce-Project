@@ -4,9 +4,13 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 
 import { Radio, RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { fetchProductByIdAsync, selectedProductById } from "../productSlice";
-import { addToCartAsync } from "../../cart/cartSlice";
+import {
+  addToCartAsync,
+  resetItemStatus,
+  selectItemStatus,
+} from "../../cart/cartSlice";
 import { selectLoggedInUser } from "../../auth/authSlice";
 
 // TODO : In server data we will add colors, sizes, highlights etc. to each product
@@ -50,12 +54,29 @@ export default function ProductDetail() {
 
   const handleCart = (e) => {
     e.preventDefault();
-    dispatch(addToCartAsync({ ...product, quantity: 1, user: user.id }));
+    const newItem = { ...product, quantity: 1, user: user.id };
+    delete newItem["id"];
+    dispatch(addToCartAsync(newItem));
   };
 
   useEffect(() => {
     dispatch(fetchProductByIdAsync(params.id));
   }, [dispatch, params.id]);
+
+  // logic for showing "Item added to cart" message
+  const navigate = useNavigate();
+  const itemStatus = useSelector(selectItemStatus);
+  const [showMessage, setShowMessage] = useState(false);
+  useEffect(() => {
+    if (itemStatus === "success") {
+      setShowMessage(true);
+      const timer = setTimeout(() => {
+        setShowMessage(false);
+        dispatch(resetItemStatus()); // ✅ reset Redux state
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [itemStatus]);
 
   return (
     <div className="bg-white">
@@ -248,7 +269,16 @@ export default function ProductDetail() {
                   </fieldset>
                 </div>
 
-                <button
+                {/* ✅ Item add to cart Success Message */}
+                {showMessage && (
+                  <div className="col-span-full">
+                    <div className="my-8 rounded-md bg-green-100 p-3 border border-green-700 text-green-700 text-center font-medium">
+                      ✅ Item added to your cart
+                    </div>
+                  </div>
+                )}
+
+                {/* <button
                   type="submit"
                   className="cursor-pointer mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
                   onClick={handleCart}
@@ -263,11 +293,45 @@ export default function ProductDetail() {
                         onClick={() => setOpen(false)}
                         className="ml-2 font-bold text-[16px] text-indigo-600 hover:text-indigo-500 cursor-pointer"
                       >
-                        Continue Shopping<ArrowRightIcon className="inline h-5 w-8 text-black size-2" />
+                        Continue Shopping
+                        <ArrowRightIcon className="inline h-5 w-8 text-black size-2" />
                       </button>
                     </Link>
                   </p>
                 </div>
+                <button
+                  type="submit"
+                  className="cursor-pointer mt-5 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
+                >
+                  Go to Cart
+                </button> */}
+
+                <button
+                  type="button"
+                  onClick={handleCart}
+                  className="cursor-pointer w-full mt-8 flex items-center justify-center rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  🛒 Add to Cart
+                </button>
+
+                <div className="mt-6 flex justify-center text-sm text-gray-500">
+                  <button
+                    type="button"
+                    onClick={() => navigate("/")}
+                    className="cursor-pointer text-[15px] my-2 inline-flex items-center gap-2 font-bold text-indigo-600 hover:text-indigo-500 transition-colors duration-200"
+                  >
+                    Continue Shopping
+                    <ArrowRightIcon className="h-5 w-5 text-indigo-600" />
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => navigate("/cart")}
+                  className="cursor-pointer w-full mt-5 flex items-center justify-center rounded-md bg-gray-100 px-6 py-3 text-base font-semibold text-gray-800 shadow-sm hover:bg-gray-200 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400"
+                >
+                  🛍️ Go to Cart
+                </button>
               </form>
             </div>
 

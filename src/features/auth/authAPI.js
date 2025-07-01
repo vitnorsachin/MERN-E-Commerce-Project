@@ -10,7 +10,7 @@ export function createUser(userData) {
       headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
-    resolve({data});
+    resolve(data);
   });
 }
 
@@ -22,8 +22,8 @@ export function checkUser(loginInfo) {
     const data = await response.json();
     if (data.length) {
       if (password === data[0].password) {
-        console.log(data);
-        resolve(data[0]);
+        // console.log(data);
+        resolve(data[0]); // This take my 2 hours to find error {data : data[0]} when i access then need to (user.data.email) like this but now i can access directly {user.email}
       } else {
         reject({ message: "Wrong credentials" });
       }
@@ -33,8 +33,17 @@ export function checkUser(loginInfo) {
   });
 }
 
-
-
+export function updateUser(update) {
+  return new Promise(async (resolve) => {
+    const response = await fetch("http://localhost:8080/users/" + update.id, {
+      method: "PATCH",
+      body: JSON.stringify(update),
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = await response.json();
+    resolve(data);
+  });
+}
 
 // import axios from "axios";
 // export const createUser = async (userData) => {
