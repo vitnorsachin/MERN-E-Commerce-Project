@@ -10,16 +10,16 @@ export function addToCart(item) {
       headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
-    resolve({data});
+    resolve({ data });
   });
 }
 
 export function fetchItemsByUserId(userId) {
   return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:8080/cart?user="+userId)
+    const response = await fetch("http://localhost:8080/cart?user=" + userId);
     const data = await response.json();
-    resolve({data});
-  })
+    resolve({ data });
+  });
 }
 
 export function updateCart(update) {
@@ -30,7 +30,7 @@ export function updateCart(update) {
       headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
-    resolve({data});
+    resolve({ data });
   });
 }
 
@@ -41,6 +41,18 @@ export function deleteItemFromCart(itemId) {
       headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
-    resolve({data :{ id:itemId }});
+    resolve({ data: { id: itemId } });
+  });
+}
+
+export function resetCart(userId) {
+  // get all items of user's cart - and then delete each
+  return new Promise(async (resolve) => {
+    const response = await fetchItemsByUserId(userId);
+    const items = response.data;
+    for (let item of items) {
+      await deleteItemFromCart(item.id);
+    }
+    resolve({ status: "success" });
   });
 }

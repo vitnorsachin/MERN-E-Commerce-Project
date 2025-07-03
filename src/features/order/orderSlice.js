@@ -1,10 +1,11 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 import { createOrder } from "./orderAPI";
 
 const initialState = {
   orders: [],
   status: "idle",
   orderStatus: "idle", // specific flag for order success
+  currentOrder: null,
 };
 
 export const createOrderAsync = createAsyncThunk(
@@ -16,12 +17,12 @@ export const createOrderAsync = createAsyncThunk(
 );
 
 export const orderSlice = createSlice({
-  name: "counter",
+  name: "order",
   initialState,
   reducers: {
-    resetOrderStatus: (state) => {
-      state.orderStatus = "idle";  // here i reset order status value
-    },
+    resetOrder: (state) =>{
+      state.currentOrder = null;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -33,6 +34,7 @@ export const orderSlice = createSlice({
         state.status = "idle";
         state.orderStatus = "success";
         state.orders.push(action.payload);
+        state.currentOrder = action.payload;
       })
       .addCase(createOrderAsync.rejected, (state) => {
         state.status = "failed";
@@ -41,8 +43,8 @@ export const orderSlice = createSlice({
   },
 });
 
-export const { increment } = orderSlice.actions;
 export const selectOrders = (state) => state.order.orders;
 export const selectOrderStatus = (state) => state.order.orderStatus;
-export const { resetOrderStatus } = orderSlice.actions;
+export const selectCurrentOrder = (state) => state.order.currentOrder;
+export const { resetOrder } = orderSlice.actions;
 export default orderSlice.reducer;

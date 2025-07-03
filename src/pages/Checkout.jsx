@@ -11,102 +11,19 @@ import {
   selectLoggedInUser,
   updateUserAsync,
 } from "../features/auth/authSlice";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ArrowRightIcon } from "@heroicons/react/16/solid";
 import {
   createOrderAsync,
-  resetOrderStatus,
-  selectOrderStatus,
+  selectCurrentOrder,
 } from "../features/order/orderSlice";
-
-const products = [
-  {
-    id: 1,
-    name: "Throwback Hip Bag",
-    href: "#",
-    color: "Salmon",
-    price: "$90.00",
-    quantity: 1,
-    imageSrc:
-      "https://tailwindcss.com/plus-assets/img/ecommerce-images/shopping-cart-page-04-product-01.jpg",
-    imageAlt:
-      "Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.",
-  },
-  {
-    id: 2,
-    name: "Medium Stuff Satchel",
-    href: "#",
-    color: "Blue",
-    price: "$32.00",
-    quantity: 1,
-    imageSrc:
-      "https://tailwindcss.com/plus-assets/img/ecommerce-images/shopping-cart-page-04-product-02.jpg",
-    imageAlt:
-      "Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.",
-  },
-  // More products...
-];
-
-const people = [
-  {
-    name: "Leslie Alexander",
-    email: "leslie.alexander@example.com",
-    role: "Co-Founder / CEO",
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    lastSeen: "3h ago",
-    lastSeenDateTime: "2023-01-23T13:23Z",
-  },
-  {
-    name: "Michael Foster",
-    email: "michael.foster@example.com",
-    role: "Co-Founder / CTO",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    lastSeen: "3h ago",
-    lastSeenDateTime: "2023-01-23T13:23Z",
-  },
-  {
-    name: "Dries Vincent",
-    email: "dries.vincent@example.com",
-    role: "Business Relations",
-    imageUrl:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    lastSeen: null,
-  },
-  {
-    name: "Lindsay Walton",
-    email: "lindsay.walton@example.com",
-    role: "Front-end Developer",
-    imageUrl:
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    lastSeen: "3h ago",
-    lastSeenDateTime: "2023-01-23T13:23Z",
-  },
-  {
-    name: "Courtney Henry",
-    email: "courtney.henry@example.com",
-    role: "Designer",
-    imageUrl:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    lastSeen: "3h ago",
-    lastSeenDateTime: "2023-01-23T13:23Z",
-  },
-  {
-    name: "Tom Cook",
-    email: "tom.cook@example.com",
-    role: "Director of Product",
-    imageUrl:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    lastSeen: null,
-  },
-];
 
 const Chekout = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   const items = useSelector(selectItems);
   const user = useSelector(selectLoggedInUser);
+  const currentOrder = useSelector(selectCurrentOrder);
 
   const {
     register,
@@ -115,7 +32,7 @@ const Chekout = () => {
     formState: { errors },
   } = useForm();
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState();
+  const [paymentMethod, setPaymentMethod] = useState(null);
 
   const handleAddress = (e) => {
     console.log(e.target.value);
@@ -144,21 +61,19 @@ const Chekout = () => {
   };
 
   const handleOrder = () => {
-    if (!selectedAddress) {
-      alert("❌ Please select or add a delivery address.");
+    if (!selectedAddress || !paymentMethod) {
+      alert("❌ Please enter or select an (Address) and choose a (Payment) method.");
       return; // 🔒 stops execution here
-    }  
-    if (!paymentMethod) {
-      alert("❌ Please select a payment method.");
-      return;
     }
-        
+
     const order = {
       items,
       totalAmount,
       totalItems,
+      user,
       paymentMethod,
       selectedAddress,
+      status: "pending", // other status can be deliverd, received.
     };
     dispatch(createOrderAsync(order));
     //TODO : redirect to order-success page
@@ -166,26 +81,19 @@ const Chekout = () => {
     //TODO : on server change the stock number of items
   };
 
-  // Login for show "success" message for "Order is placed"
-  const orderStatus = useSelector(selectOrderStatus);
-  const [showMessage, setShowMessage] = useState(false);
-  useEffect(() => {
-    if (orderStatus === "success") {
-      setShowMessage(true);
-      const timer = setTimeout(() => {
-        setShowMessage(false)
-        dispatch(resetOrderStatus())
-      }, 4000);
-      return () => clearTimeout(timer);
-    }
-  }, [orderStatus]);
-
   return (
     <>
       {!items.length && <Navigate to="/" replace={true}></Navigate>}
+      {currentOrder && (
+        <Navigate
+          to={`/order-success/${currentOrder.id}`}
+          replace={true}
+        ></Navigate>
+      )}
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
-          {/*🟢 Personal Information */}
+          {/*🟢 Address Information */}
           <div className="lg:col-span-3">
             <form
               className="bg-white px-4 py-12 mt-12"
@@ -415,7 +323,8 @@ const Chekout = () => {
                     {/* 🔴 Show message if no address exists */}
                     {user.addresses.length === 0 && (
                       <p className="mt-4 text-red-600 font-medium">
-                        ⚠️ You haven’t added any address yet. Please fill the form above to add one.
+                        ⚠️ You haven’t added any address yet. Please fill the
+                        form above to add one.
                       </p>
                     )}
 
@@ -586,15 +495,6 @@ const Chekout = () => {
                 <p className="mt-0.5 text-sm text-gray-500">
                   Shipping and taxes calculated at checkout.
                 </p>
-
-                {/* ✅ Order Success Message */}
-                {showMessage && (
-                  <div className="col-span-full">
-                    <div className="my-8 rounded-md bg-green-100 p-3 border border-green-700 text-green-700 text-center font-medium">
-                      ✅ Order is Placed!
-                    </div>
-                  </div>
-                )}
 
                 <div
                   onClick={handleOrder}

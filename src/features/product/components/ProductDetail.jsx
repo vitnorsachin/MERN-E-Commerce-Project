@@ -73,7 +73,7 @@ export default function ProductDetail() {
       const timer = setTimeout(() => {
         setShowMessage(false);
         dispatch(resetItemStatus()); // ✅ reset Redux state
-      }, 4000);
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [itemStatus]);
