@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import {
   Disclosure,
   DisclosureButton,
@@ -28,7 +28,7 @@ const navigation = [
   { name: "Team", href: "#", current: false },
 ];
 const userNavigation = [
-  { name: "Your Profile", link: "/profile" },
+  { name: "My Profile", link: "/profile" },
   { name: "My Orders", link: "/orders" },
   { name: "Sign out", link: "/login" },
 ];
@@ -40,6 +40,9 @@ function classNames(...classes) {
 const NavBar = ({ children }) => {
   const items = useSelector(selectItems);
   const user = useSelector(selectLoggedInUser);
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
   const userFirstChar = user.email.charAt(0).toUpperCase();
 
   return (

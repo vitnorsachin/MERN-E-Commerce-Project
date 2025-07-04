@@ -1,4 +1,3 @@
-import { Cart } from "../features/cart/Cart";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteItemFromCartAsync,
@@ -7,22 +6,20 @@ import {
 } from "../features/cart/cartSlice";
 import { Link, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import {
-  selectLoggedInUser,
-  updateUserAsync,
-} from "../features/auth/authSlice";
+import { updateUserAsync } from "../features/auth/authSlice";
 import { useState } from "react";
 import { ArrowRightIcon } from "@heroicons/react/16/solid";
 import {
   createOrderAsync,
   selectCurrentOrder,
 } from "../features/order/orderSlice";
+import { selectUserInfo } from "../features/user/userSlice";
 
 const Chekout = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   const items = useSelector(selectItems);
-  const user = useSelector(selectLoggedInUser);
+  const user = useSelector(selectUserInfo);
   const currentOrder = useSelector(selectCurrentOrder);
 
   const {
