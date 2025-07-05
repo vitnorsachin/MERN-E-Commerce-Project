@@ -33,6 +33,13 @@ export function checkUser(loginInfo) {
   });
 }
 
+export function signOut() {
+  return new Promise(async(resolve)=>{
+    //TODO : on server we wil remove user session info
+    resolve({ data : "success" })
+  })
+}
+
 
 // import axios from "axios";
 // export const createUser = async (userData) => {

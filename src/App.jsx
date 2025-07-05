@@ -16,6 +16,8 @@ import OrderSuccessPage from "./pages/OrderSuccessPage";
 import UserOrdersPage from "./pages/UserOrdersPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import { fetchLoggedInUserAsync } from "./features/user/userSlice";
+import Logout from "./features/auth/components/Logout";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 let router = createBrowserRouter([
   {
@@ -53,6 +55,14 @@ let router = createBrowserRouter([
   {
     path: "/profile",
     element: <UserProfilePage/>,
+  },
+  {
+    path: "/logout",
+    element: <Logout/>,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPasswordPage/>,
   },
   {
     path: "*",

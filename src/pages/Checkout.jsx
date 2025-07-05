@@ -14,6 +14,7 @@ import {
   selectCurrentOrder,
 } from "../features/order/orderSlice";
 import { selectUserInfo } from "../features/user/userSlice";
+import NavBar from "../features/navbar/Navbar";
 
 const Chekout = () => {
   const [open, setOpen] = useState(false);
@@ -32,12 +33,12 @@ const Chekout = () => {
   const [paymentMethod, setPaymentMethod] = useState(null);
 
   const handleAddress = (e) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     setSelectedAddress(user.addresses[e.target.value]);
   };
 
   const handlePayment = (e) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     setPaymentMethod(e.target.value);
   };
 
@@ -87,13 +88,13 @@ const Chekout = () => {
           replace={true}
         ></Navigate>
       )}
-
+      <NavBar>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
           {/*🟢 Address Information */}
           <div className="lg:col-span-3">
             <form
-              className="bg-white px-4 py-12 mt-12"
+              className="bg-white px-4 py-4"
               noValidate
               onSubmit={handleSubmit((data) => {
                 // console.log(data);
@@ -519,6 +520,7 @@ const Chekout = () => {
           </div>
         </div>
       </div>
+      </NavBar>
     </>
   );
 };

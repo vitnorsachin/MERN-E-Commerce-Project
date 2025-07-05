@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { createUser, checkUser } from "./authAPI";
+import { createUser, checkUser, signOut } from "./authAPI";
 import { updateUser } from "../user/userAPI";
 
 const initialState = {
@@ -10,7 +10,7 @@ const initialState = {
 
 
 export const createUserAsync = createAsyncThunk(
-  "auth/createUser",
+  "user/createUser",
   async (userData) => {
     const user = await createUser(userData);
     return user;
@@ -18,28 +18,38 @@ export const createUserAsync = createAsyncThunk(
 );
 
 export const checkUserAsync = createAsyncThunk(
-  "auth/checkUser",
+  "user/checkUser",
   async (loginInfo) => {
   const user = await checkUser(loginInfo);
   return user;
 });
 
 export const updateUserAsync = createAsyncThunk(
-  "auth/updateUser",
+  "user/updateUser",
   async (update) => {
     const user = await updateUser(update);
     return user;
   }
 );
 
+export const signOutAsync = createAsyncThunk(
+  "user/signOut",
+  async () => {
+  const user = await signOut();
+  return user;
+});
 
-export const userSlice = createSlice({
-  name: "auth",
+
+export const authSlice = createSlice({
+  name: "user",
   initialState,
   reducers: {
     increment: (state) => {
       state.value += 1;
     },
+    // signOutP: (state) => {
+    //   state.loggedInUser = null;
+    // },
   },
   extraReducers: (builder) => {
     builder
@@ -69,10 +79,18 @@ export const userSlice = createSlice({
       .addCase(updateUserAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.loggedInUser = action.payload;
+      })
+      .addCase(signOutAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(signOutAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.loggedInUser = null;
       });
   },
 });
 
 export const selectLoggedInUser = (state) => state.auth.loggedInUser;
 export const selectError = (state) => state.auth.error;
-export default userSlice.reducer;
+export default authSlice.reducer;
+export const { signOutP } = authSlice.actions;

@@ -15,7 +15,7 @@ export function UserOrders() {
     <>
     <h2 className="font-semibold text-2xl mb-4">My Orders</h2>
       {orders?.map((order) => (
-        <div className="mx-auto mb-12 border-t-3 border-t-gray-400 bg-white max-w-7xl px-4 sm:px-6 lg:px-10">
+        <div key={order.id} className="mx-auto mb-12 border-t-3 border-t-gray-400 bg-white max-w-7xl px-4 sm:px-6 lg:px-10">
           <div className="border-t border-gray-200 py-6 sm:px-6">
             <h1 className="text-4xl my-5 font-bold tracking-tight text-gray-900">
               Order # {order.id}

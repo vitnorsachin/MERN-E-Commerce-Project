@@ -6576,66 +6576,64 @@
       "user": "e26e"
     },
     {
-      "id": "a3d9",
-      "title": "Apple MacBook Pro 14 Inch Space Grey",
-      "description": "The MacBook Pro 14 Inch in Space Grey is a powerful and sleek laptop, featuring Apple's M1 Pro chip for exceptional performance and a stunning Retina display.",
-      "category": "laptops",
-      "price": 1999.99,
-      "discountPercentage": 4.69,
-      "rating": 3.65,
-      "stock": 24,
+      "id": "60d3",
+      "title": "Essence Mascara Lash Princess",
+      "description": "The Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and cruelty-free formula.",
+      "category": "beauty",
+      "price": 9.99,
+      "discountPercentage": 10.48,
+      "rating": 2.56,
+      "stock": 99,
       "tags": [
-        "laptops",
-        "apple"
+        "beauty",
+        "mascara"
       ],
-      "brand": "Apple",
-      "sku": "LAP-APP-APP-078",
-      "weight": 9,
+      "brand": "Essence",
+      "sku": "BEA-ESS-ESS-001",
+      "weight": 4,
       "dimensions": {
-        "width": 20.03,
-        "height": 9.54,
-        "depth": 14.82
+        "width": 15.14,
+        "height": 13.08,
+        "depth": 22.99
       },
-      "warrantyInformation": "3 year warranty",
-      "shippingInformation": "Ships in 2 weeks",
+      "warrantyInformation": "1 week warranty",
+      "shippingInformation": "Ships in 3-5 business days",
       "availabilityStatus": "In Stock",
       "reviews": [
         {
-          "rating": 5,
-          "comment": "Very happy with my purchase!",
+          "rating": 3,
+          "comment": "Would not recommend!",
           "date": "2025-04-30T09:41:02.053Z",
-          "reviewerName": "Hazel Evans",
-          "reviewerEmail": "hazel.evans@x.dummyjson.com"
-        },
-        {
-          "rating": 5,
-          "comment": "Very happy with my purchase!",
-          "date": "2025-04-30T09:41:02.053Z",
-          "reviewerName": "Christopher West",
-          "reviewerEmail": "christopher.west@x.dummyjson.com"
+          "reviewerName": "Eleanor Collins",
+          "reviewerEmail": "eleanor.collins@x.dummyjson.com"
         },
         {
           "rating": 4,
           "comment": "Very satisfied!",
           "date": "2025-04-30T09:41:02.053Z",
-          "reviewerName": "Aubrey Garcia",
-          "reviewerEmail": "aubrey.garcia@x.dummyjson.com"
+          "reviewerName": "Lucas Gordon",
+          "reviewerEmail": "lucas.gordon@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Highly impressed!",
+          "date": "2025-04-30T09:41:02.053Z",
+          "reviewerName": "Eleanor Collins",
+          "reviewerEmail": "eleanor.collins@x.dummyjson.com"
         }
       ],
-      "returnPolicy": "90 days return policy",
-      "minimumOrderQuantity": 1,
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 48,
       "meta": {
         "createdAt": "2025-04-30T09:41:02.053Z",
         "updatedAt": "2025-04-30T09:41:02.053Z",
-        "barcode": "5275211560367",
+        "barcode": "5784719087687",
         "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
       },
       "images": [
-        "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/1.webp",
-        "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/2.webp",
-        "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/3.webp"
+        "https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/1.webp"
       ],
-      "thumbnail": "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/thumbnail.webp",
+      "thumbnail": "https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/thumbnail.webp",
       "quantity": 1,
       "user": "7641"
     }
@@ -7016,6 +7014,178 @@
         "city": "Nagar",
         "state": "Maharashtra",
         "pinCode": "548798"
+      },
+      "status": "pending"
+    },
+    {
+      "id": "a4a5",
+      "items": [
+        {
+          "id": "a3d9",
+          "title": "Apple MacBook Pro 14 Inch Space Grey",
+          "description": "The MacBook Pro 14 Inch in Space Grey is a powerful and sleek laptop, featuring Apple's M1 Pro chip for exceptional performance and a stunning Retina display.",
+          "category": "laptops",
+          "price": 1999.99,
+          "discountPercentage": 4.69,
+          "rating": 3.65,
+          "stock": 24,
+          "tags": [
+            "laptops",
+            "apple"
+          ],
+          "brand": "Apple",
+          "sku": "LAP-APP-APP-078",
+          "weight": 9,
+          "dimensions": {
+            "width": 20.03,
+            "height": 9.54,
+            "depth": 14.82
+          },
+          "warrantyInformation": "3 year warranty",
+          "shippingInformation": "Ships in 2 weeks",
+          "availabilityStatus": "In Stock",
+          "reviews": [
+            {
+              "rating": 5,
+              "comment": "Very happy with my purchase!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Hazel Evans",
+              "reviewerEmail": "hazel.evans@x.dummyjson.com"
+            },
+            {
+              "rating": 5,
+              "comment": "Very happy with my purchase!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Christopher West",
+              "reviewerEmail": "christopher.west@x.dummyjson.com"
+            },
+            {
+              "rating": 4,
+              "comment": "Very satisfied!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Aubrey Garcia",
+              "reviewerEmail": "aubrey.garcia@x.dummyjson.com"
+            }
+          ],
+          "returnPolicy": "90 days return policy",
+          "minimumOrderQuantity": 1,
+          "meta": {
+            "createdAt": "2025-04-30T09:41:02.053Z",
+            "updatedAt": "2025-04-30T09:41:02.053Z",
+            "barcode": "5275211560367",
+            "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+          },
+          "images": [
+            "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/1.webp",
+            "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/2.webp",
+            "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/3.webp"
+          ],
+          "thumbnail": "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/thumbnail.webp",
+          "quantity": 1,
+          "user": "7641"
+        },
+        {
+          "id": "8087",
+          "title": "Man Short Sleeve Shirt",
+          "description": "The Man Short Sleeve Shirt is a breezy and stylish option for warm days. With a comfortable fit and short sleeves, it's perfect for a laid-back yet polished look.",
+          "category": "mens-shirts",
+          "price": 19.99,
+          "discountPercentage": 6.83,
+          "rating": 2.9,
+          "stock": 2,
+          "tags": [
+            "clothing",
+            "men's shirts"
+          ],
+          "brand": "Casual Comfort",
+          "sku": "MEN-CAS-SHO-086",
+          "weight": 2,
+          "dimensions": {
+            "width": 5.02,
+            "height": 16.57,
+            "depth": 9.6
+          },
+          "warrantyInformation": "3 year warranty",
+          "shippingInformation": "Ships in 2 weeks",
+          "availabilityStatus": "Low Stock",
+          "reviews": [
+            {
+              "rating": 5,
+              "comment": "Highly recommended!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Charlotte Lopez",
+              "reviewerEmail": "charlotte.lopez@x.dummyjson.com"
+            },
+            {
+              "rating": 2,
+              "comment": "Poor quality!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Ellie Stewart",
+              "reviewerEmail": "ellie.stewart@x.dummyjson.com"
+            },
+            {
+              "rating": 1,
+              "comment": "Would not recommend!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Sadie Morales",
+              "reviewerEmail": "sadie.morales@x.dummyjson.com"
+            }
+          ],
+          "returnPolicy": "30 days return policy",
+          "minimumOrderQuantity": 4,
+          "meta": {
+            "createdAt": "2025-04-30T09:41:02.053Z",
+            "updatedAt": "2025-04-30T09:41:02.053Z",
+            "barcode": "9995865660204",
+            "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+          },
+          "images": [
+            "https://cdn.dummyjson.com/product-images/mens-shirts/man-short-sleeve-shirt/1.webp",
+            "https://cdn.dummyjson.com/product-images/mens-shirts/man-short-sleeve-shirt/2.webp",
+            "https://cdn.dummyjson.com/product-images/mens-shirts/man-short-sleeve-shirt/3.webp",
+            "https://cdn.dummyjson.com/product-images/mens-shirts/man-short-sleeve-shirt/4.webp"
+          ],
+          "thumbnail": "https://cdn.dummyjson.com/product-images/mens-shirts/man-short-sleeve-shirt/thumbnail.webp",
+          "quantity": 1,
+          "user": "7641"
+        }
+      ],
+      "totalAmount": "2019.98",
+      "totalItems": 2,
+      "user": {
+        "id": "7641",
+        "email": "ganesh@gmail.com",
+        "password": "Ganu@123",
+        "addresses": [
+          {
+            "name": "Ganesh Vitnor",
+            "email": "ganesh@gmail.com",
+            "phone": "7498413903",
+            "street": "Salagar wasti",
+            "city": "Ahilyanagar",
+            "state": "Maharashtra",
+            "pinCode": "414502"
+          },
+          {
+            "name": "Sachin Vitnor",
+            "email": "sachin@gmail.com",
+            "phone": "7878787878",
+            "street": "Karve nagar",
+            "city": "Pune",
+            "state": "Maharashtra",
+            "pinCode": "451241"
+          }
+        ]
+      },
+      "paymentMethod": "card",
+      "selectedAddress": {
+        "name": "Sachin Vitnor",
+        "email": "sachin@gmail.com",
+        "phone": "7878787878",
+        "street": "Karve nagar",
+        "city": "Pune",
+        "state": "Maharashtra",
+        "pinCode": "451241"
       },
       "status": "pending"
     }
