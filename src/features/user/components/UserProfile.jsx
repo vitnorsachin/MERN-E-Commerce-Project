@@ -52,15 +52,18 @@ export default function UserProfile() {
   return (
     <>
       <h2 className="font-semibold text-2xl mb-4">My Profile</h2>
-      <div className="mx-auto bg-white max-w-7xl px-4 sm:px-6 lg:px-10">
+      <div className="mx-auto bg-white max-w-7xl px-4 sm:px-6 lg:px-10 rounded-xl shadow-md">
         <div className="border-t border-gray-200 py-6 sm:px-6">
           <h1 className="text-2xl my-5 font-bold tracking-tight text-gray-900">
             {/* Name : {user.name ? user.name : "Guest User"}🟡 update in future */}
-            Name : {user.name ? user.name : user.addresses[0].name}
+            Name : {user?.name || user?.addresses?.[0]?.name || "Guest User"}
           </h1>
-          <h3 className="mb-0 text-lg my-5 font-bold tracking-tight">
-            Email address : {user?.email}
+          <h3 className="mb-0 text-lg text-blue-500 my-5 font-bold tracking-tight">
+            Email address : {user.email}
           </h3>
+          {user.role === "admin" && <h3 className="bg-amber-400 inline-block py-1 px-2 mb-0 text-lg my-5 font-bold tracking-tight">
+            Role : {user.role}
+          </h3>}
         </div>
         <div className="border-t border-gray-200 py-6 sm:px-6">
           <button
@@ -499,7 +502,7 @@ export default function UserProfile() {
                       <button
                         onClick={(e) => setSelectedEditIndex}
                         type="submit"
-                        className="cursor-pointer rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        className="cursor-pointer rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold shadow-xs  hover:bg-gray-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       >
                         Cancel
                       </button>

@@ -42,7 +42,9 @@ export function Signup() {
                 createUserAsync({
                   email: data.email,
                   password: data.password,
-                  addresses: []
+                  addresses: [],
+                  role: 'user'
+                  //TODO: This role can be diectly given on backend
                 })
               );
             })}

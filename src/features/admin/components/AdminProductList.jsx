@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
+  fetchAllProductsAsync,
   fetchBrandsAsync,
   fetchCategoriesAsync,
   fetchProductsByFiltersAsync,
@@ -8,7 +9,7 @@ import {
   selectBrands,
   selectCategories,
   selectTotalItems,
-} from "../productSlice";
+} from "../../product/productSlice";
 import {
   Dialog,
   DialogBackdrop,
@@ -26,9 +27,9 @@ import {
   ChevronDownIcon,
   FunnelIcon,
   MinusIcon,
-  PlusIcon,
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -54,7 +55,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ProductList() {
+export default function AdminProductList() {
   const dispatch = useDispatch();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const products = useSelector(selectAllProducts);
@@ -93,7 +94,7 @@ export default function ProductList() {
       );
       newFilter[section.id].splice(index, 1);
     }
-    console.log({ newFilter });
+    // console.log({ newFilter });
     setFilter(newFilter);
   };
 
@@ -111,7 +112,6 @@ export default function ProductList() {
   useEffect(() => {
     const pagination = { _page: page, _per_page: ITEMS_PER_PAGE };
     dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination }));
-    // TODO : Server will filter deleted products
   }, [dispatch, filter, sort, page]);
 
   useEffect(() => {
@@ -518,51 +518,68 @@ function ProductGrid({ products }) {
     <>
       {/* Product grid */}
       <div className="lg:col-span-3">
-        {/* // This is productList----------------------------------------------------------------------------------------------------- */}
+        {/* This is productList*/}
         <div className="bg-white">
           <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
-            <div className="mt-1 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+            <Link
+              to="/admin/product-form"
+              className="cursor-pointer rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-green-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              <PlusIcon className="inline-block w-5 h-5 text-white stroke-[3]" />{" "}
+              Add New Product
+            </Link>
+            <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
               {products.map((product) => (
-                <div
-                  key={product.id}
-                  className="transition duration-300 ease-in-out transform hover:scale-110 shadow-2xs hover:shadow-2xl group relative border-solid p-2 border-2 border-gray-200 rounded-xl"
-                >
-                  <Link to={`/product-detail/${product.id}`}>
-                    <img
-                      alt={product.title}
-                      src={product.thumbnail}
-                      className="aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-60"
-                      loading="lazy"
-                    />
+                <div>
+                  <div
+                    key={product.id}
+                    className="group relative border-solid p-2 border-2 border-gray-200 rounded-xl"
+                  >
+                    <Link to={`/product-detail/${product.id}`}>
+                      <img
+                        alt={product.title}
+                        src={product.thumbnail}
+                        className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-90 lg:aspect-auto lg:h-60"
+                        loading="lazy"
+                      />
 
-                    <div className="mt-4 flex justify-between">
-                      <div>
-                        <h3 className="text-sm text-gray-700">
-                          {product.title}
-                        </h3>
-                        <p className="mt-1 text-sm text-gray-500">
-                          <StarIcon className="w-5 h-5 inline" />
-                          <span className="align-bottom ml-1">
-                            {product.rating}
-                          </span>
-                        </p>
+                      <div className="mt-4 flex justify-between">
+                        <div>
+                          <h3 className="text-sm text-gray-700">
+                            {product.title}
+                          </h3>
+                          <p className="mt-1 text-sm text-gray-500">
+                            <StarIcon className="w-5 h-5 inline" />
+                            <span className="align-bottom ml-1">
+                              {product.rating}
+                            </span>
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            $
+                            {Math.round(
+                              product.price *
+                                (1 - product.discountPercentage / 100)
+                            )}
+                          </p>
+                          <p className="text-sm line-through font-medium text-gray-500">
+                            ${product.price}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          $
-                          {Math.round(
-                            product.price *
-                              (1 - product.discountPercentage / 100)
-                          )}
-                        </p>
-                        <p className="text-sm line-through font-medium text-gray-500">
-                          ${product.price}
-                        </p>
-                      </div>
+                    </Link>
+                    <div>
+                      {product.deleted && <p className="text-sm text-red-500 mt-1">Product is Deleted</p>}
                     </div>
-                  </Link>
-                  <div>
-                    {product.deleted && <p className="text-sm text-red-500 mt-1">Product is Deleted</p>}
+                  </div>
+                  <div className="mt-4">
+                    <Link
+                      to={`/admin/product-form/edit/${product.id}`}
+                      className="text-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+                    >
+                      Edit Product
+                    </Link>
                   </div>
                 </div>
               ))}

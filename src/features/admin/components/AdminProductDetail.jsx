@@ -4,24 +4,16 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 
 import { Radio, RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { fetchProductByIdAsync, selectedProductById } from "../productSlice";
-import {
-  addToCartAsync,
-  resetItemStatus,
-  selectItemStatus,
-} from "../../cart/cartSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { fetchProductByIdAsync, selectedProductById } from "../../product/productSlice";
+import { addToCartAsync, resetItemStatus, selectItemStatus } from "../../cart/cartSlice";
 import { selectLoggedInUser } from "../../auth/authSlice";
 
 // TODO : In server data we will add colors, sizes, highlights etc. to each product
 const colors = [
   { id: "white", name: "White", classes: "bg-white checked:outline-gray-400" },
   { id: "gray", name: "Gray", classes: "bg-gray-200 checked:outline-gray-400" },
-  {
-    id: "black",
-    name: "Black",
-    classes: "bg-gray-900 checked:outline-gray-900",
-  },
+  { id: "black", name: "Black", classes: "bg-gray-900 checked:outline-gray-900" },
 ];
 const sizes = [
   { name: "XXS", inStock: false },
@@ -44,7 +36,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ProductDetail() {
+export default function AdminProductDetail() {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const dispatch = useDispatch();
@@ -82,62 +74,22 @@ export default function ProductDetail() {
     <div className="bg-white">
       {product && (
         <div className="pt-6">
-          {/* <nav aria-label="Breadcrumb">
-          <ol
-            role="list"
-            className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
-          >
-            {product.breadcrumbs &&
-              product.breadcrumbs.map((breadcrumb) => (
-                <li key={breadcrumb.id}>
-                  <div className="flex items-center">
-                    <a
-                      href={breadcrumb.href}
-                      className="mr-2 text-sm font-medium text-gray-900"
-                    >
-                      {breadcrumb.name}
-                    </a>
-                    <svg
-                      fill="currentColor"
-                      width={16}
-                      height={20}
-                      viewBox="0 0 16 20"
-                      aria-hidden="true"
-                      className="h-5 w-4 text-gray-300"
-                    >
-                      <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                    </svg>
-                  </div>
-                </li>
-              ))}
-            <li className="text-sm">
-              <a
-                href={product.href}
-                aria-current="page"
-                className="font-medium text-gray-500 hover:text-gray-600"
-              >
-                {product.title}
-              </a>
-            </li>
-          </ol>
-        </nav> */}
-
           {/* Image gallery */}
           <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-8 lg:px-8">
             <img
               src={product.images[0]}
               alt={product.images.title}
-              className="row-span-2 aspect-3/4 size-full rounded-lg object-contain "
+              className="row-span-2 aspect-3/4 size-full rounded-lg object-cover "
             />
             <img
               src={product.images[1]}
               alt={product.images.title}
-              className="col-start-2 aspect-3/2 size-full rounded-lg object-contain max-lg:hidden"
+              className="col-start-2 aspect-3/2 size-full rounded-lg object-cover max-lg:hidden"
             />
             <img
               src={product.images[2]}
               alt={product.images.title}
-              className="col-start-2 row-start-2 aspect-3/2 size-full rounded-lg object-contain max-lg:hidden"
+              className="col-start-2 row-start-2 aspect-3/2 size-full rounded-lg object-cover max-lg:hidden"
             />
           </div>
 
@@ -278,34 +230,6 @@ export default function ProductDetail() {
                   </div>
                 )}
 
-                {/* <button
-                  type="submit"
-                  className="cursor-pointer mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
-                  onClick={handleCart}
-                >
-                  Add to Cart
-                </button>
-                <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
-                  <p>
-                    <Link to="/">
-                      <button
-                        type="button"
-                        onClick={() => setOpen(false)}
-                        className="ml-2 font-bold text-[16px] text-indigo-600 hover:text-indigo-500 cursor-pointer"
-                      >
-                        Continue Shopping
-                        <ArrowRightIcon className="inline h-5 w-8 text-black size-2" />
-                      </button>
-                    </Link>
-                  </p>
-                </div>
-                <button
-                  type="submit"
-                  className="cursor-pointer mt-5 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
-                >
-                  Go to Cart
-                </button> */}
-
                 <button
                   type="button"
                   onClick={handleCart}
@@ -324,7 +248,6 @@ export default function ProductDetail() {
                     <ArrowRightIcon className="h-5 w-5 text-indigo-600" />
                   </button>
                 </div>
-
                 <button
                   type="button"
                   onClick={() => navigate("/cart")}

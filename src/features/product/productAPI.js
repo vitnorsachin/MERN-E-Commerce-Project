@@ -2,6 +2,7 @@ export function fetchAllProducts() {
   return new Promise(async (resolve) => {
     // TODO: we will not hardcoded server url
     const response = await fetch("http://localhost:8080/products?");
+    // TODO : Server will filter deleted products
     const data = await response.json();
     resolve({ data });
   });
@@ -20,8 +21,8 @@ export function fetchProductsByFilters(filter, sort, pagination) {
   // sort = {_sort:"-price"}
   // pagination = {_page:1,_limit=10}
   // pagination = {_page=4&_per_page=9}
-
   // TODO : on server we will support multiple values
+  // TODO : Server will filter deleted products in case of non-admin
   let queryString = "";
   for (let key in filter) {
     const categoryValues = filter[key];
@@ -47,7 +48,6 @@ export function fetchProductsByFilters(filter, sort, pagination) {
   });
 }
 
-
 export function fetchCategories() {
   return new Promise(async (resolve) => {
     const response = await fetch("http://localhost:8080/categories");
@@ -59,6 +59,30 @@ export function fetchCategories() {
 export function fetchBrands() {
   return new Promise(async (resolve) => {
     const response = await fetch("http://localhost:8080/brands");
+    const data = await response.json();
+    resolve({ data });
+  });
+}
+
+export function createProduct(product) { 
+  return new Promise(async (resolve) => {
+    const response = await fetch("http://localhost:8080/products/",{
+      method: "POST",
+      body: JSON.stringify(product),
+      headers: {'content-type':'application/json'}
+    })
+    const data = await response.json();
+    resolve({ data });
+  })
+}
+
+export function updateProduct(update) {
+  return new Promise(async (resolve) => {
+    const response = await fetch("http://localhost:8080/products/" + update.id, {
+      method: "PATCH",
+      body: JSON.stringify(update),
+      headers: { "Content-Type": "application/json" },
+    });
     const data = await response.json();
     resolve({ data });
   });

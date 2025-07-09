@@ -94,7 +94,7 @@ const Chekout = () => {
           {/*🟢 Address Information */}
           <div className="lg:col-span-3">
             <form
-              className="bg-white px-4 py-4"
+              className="bg-white px-4 py-4 rounded-xl shadow-md"
               noValidate
               onSubmit={handleSubmit((data) => {
                 // console.log(data);
@@ -414,7 +414,7 @@ const Chekout = () => {
 
           {/*🟢 Cart */}
           <div className="lg:col-span-2">
-            <div className="mt-12 mx-auto bg-white max-w-7xl px-1 sm:px-1 lg:px-1">
+            <div className="mx-auto bg-white max-w-7xl px-1 sm:px-1 lg:px-1 rounded-xl shadow-md">
               <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                 <h1 className="text-4xl my-5 font-bold tracking-tight text-gray-900">
                   Cart

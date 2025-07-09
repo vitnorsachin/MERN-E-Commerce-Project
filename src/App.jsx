@@ -18,11 +18,20 @@ import UserProfilePage from "./pages/UserProfilePage";
 import { fetchLoggedInUserAsync } from "./features/user/userSlice";
 import Logout from "./features/auth/components/Logout";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ProtectedAdmin from "./features/auth/components/ProtectedAdmin";
+import AdminHome from "./pages/AdminHome";
+import AdminProductDetailPage from "./pages/AdminProductDetailPage";
+import AdminProductFormPage from "./pages/AdminProductFormPage";
+import AdminOrdersPage from "./pages/AdminOrdersPage";
 
 let router = createBrowserRouter([
   {
     path: "/",
     element: <Protected><Home /></Protected>,
+  },
+  {
+    path: "/admin",
+    element: <ProtectedAdmin><AdminHome /></ProtectedAdmin>,
   },
   {
     path: "/login",
@@ -43,6 +52,22 @@ let router = createBrowserRouter([
   {
     path: "/product-detail/:id",
     element: <Protected><ProductDetailPage/></Protected>,
+  },
+  {
+    path: "/admin/product-detail/:id",
+    element: <ProtectedAdmin><AdminProductDetailPage/></ProtectedAdmin>,
+  },
+  {
+    path: "/admin/product-form",
+    element: <ProtectedAdmin><AdminProductFormPage/></ProtectedAdmin>,
+  },
+  {
+    path: "/admin/orders",
+    element: <ProtectedAdmin><AdminOrdersPage/></ProtectedAdmin>,
+  },
+  {
+    path: "/admin/product-form/edit/:id",
+    element: <ProtectedAdmin><AdminProductFormPage/></ProtectedAdmin>,
   },
   {
     path: "/order-success/:id",
@@ -86,6 +111,7 @@ function App() {
     <>
       <div>
         <RouterProvider router={router} />
+        {/* Link must be inside othe Provider */}
       </div>
     </>
   );
