@@ -41,7 +41,9 @@ export function fetchProductsByFilters(filter, sort, pagination) {
   }
 
   return new Promise(async (resolve) => {
-    const response = await fetch(`http://localhost:8080/products?${queryString}`);
+    // http://localhost:8080/products?_sort=-price : for price sort Descending order(-)sign
+    // http://localhost:8080/products?_sort=price : for price sort Acending order
+    const response = await fetch(`http://localhost:8080/products?${queryString}`); 
     const result = await response.json();
     const totalItems = result.items;
     resolve({ data: {products: result.data, totalItems: +totalItems }});

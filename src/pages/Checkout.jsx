@@ -15,6 +15,7 @@ import {
 } from "../features/order/orderSlice";
 import { selectUserInfo } from "../features/user/userSlice";
 import NavBar from "../features/navbar/Navbar";
+import { discountedPrice } from "../app/constants";
 
 const Chekout = () => {
   const [open, setOpen] = useState(false);
@@ -44,10 +45,10 @@ const Chekout = () => {
 
   //🟢 Cart
   let totalAmount = items.reduce(
-    (amount, item) => item.price * item.quantity + amount,
+    (amount, item) => discountedPrice(item) * item.quantity + amount,
     0
   );
-  totalAmount = totalAmount.toFixed(2);
+  totalAmount = parseFloat(totalAmount.toFixed(2));
   const totalItems = items.reduce((total, item) => item.quantity + total, 0);
 
   const handleQuantity = (e, item) => {
@@ -437,7 +438,7 @@ const Chekout = () => {
                               <h3>
                                 <a href={item.href}>{item.title}</a>
                               </h3>
-                              <p className="ml-4">${item.price}</p>
+                              <p className="ml-4">${discountedPrice(item)}</p>
                             </div>
                             <p className="mt-1 text-sm text-gray-500">
                               {item.brand}
