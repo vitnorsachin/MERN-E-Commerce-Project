@@ -16,6 +16,7 @@ import {
 import { selectUserInfo } from "../features/user/userSlice";
 import NavBar from "../features/navbar/Navbar";
 import { discountedPrice } from "../app/constants";
+import { toast } from "react-toastify";
 
 const Chekout = () => {
   const [open, setOpen] = useState(false);
@@ -61,7 +62,7 @@ const Chekout = () => {
 
   const handleOrder = () => {
     if (!selectedAddress || !paymentMethod) {
-      alert("❌ Please enter or select an (Address) and choose a (Payment) method.");
+      toast.error("Please enter or select an (Address) and choose a (Payment) method.",{style: { fontSize: "0.9rem",fontWeight: "normal"}});
       return; // 🔒 stops execution here
     }
 

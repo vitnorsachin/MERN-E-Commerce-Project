@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
 import { checkUserAsync, selectError, selectLoggedInUser } from "../authSlice";
+import { toast } from "react-toastify";
 
 export function Login() {
   const dispatch = useDispatch();
@@ -21,9 +22,9 @@ export function Login() {
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
-            alt="Your Company"
-            src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-            className="mx-auto h-10 w-auto"
+            alt="My Company"
+            src="ecommerce.png"
+            className="mx-auto h-12 w-auto"
           />
           <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
             Log in to your account
@@ -37,7 +38,8 @@ export function Login() {
             onSubmit={handleSubmit((data) => {
               // console.log(data);
               dispatch(
-                checkUserAsync({ email: data.email, password: data.password })
+                checkUserAsync({ email: data.email, password: data.password }),
+                toast.success("Login Successfull", {style: { fontSize: "0.9rem",fontWeight: "bold"}})
               );
             })}
           >

@@ -32,7 +32,8 @@ export function fetchAllOrders({ sort, pagination }) {
     queryString += `${key}=${pagination[key]}&`;
   }
   return new Promise(async (resolve) => {
-    // http://localhost:8080/orders?_sort=-id : sort id in desceding order(-id)
+    // http://localhost:8080/orders?_sort=-id             => sort id in desceding order(-id)
+    // http://localhost:8080/orders?_page=1&_per_page=10  => pagination
     const response = await fetch(`http://localhost:8080/orders?${queryString}`);
     const result = await response.json();
     resolve({ data: { orders: result.data, totalOrders: +result.items } });

@@ -5,8 +5,15 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchProductByIdAsync, selectedProductById } from "../../product/productSlice";
-import { addToCartAsync, resetItemStatus, selectItemStatus } from "../../cart/cartSlice";
+import {
+  fetchProductByIdAsync,
+  selectedProductById,
+} from "../../product/productSlice";
+import {
+  addToCartAsync,
+  resetItemStatus,
+  selectItemStatus,
+} from "../../cart/cartSlice";
 import { selectLoggedInUser } from "../../auth/authSlice";
 import { discountedPrice } from "../../../app/constants";
 
@@ -14,7 +21,11 @@ import { discountedPrice } from "../../../app/constants";
 const colors = [
   { id: "white", name: "White", classes: "bg-white checked:outline-gray-400" },
   { id: "gray", name: "Gray", classes: "bg-gray-200 checked:outline-gray-400" },
-  { id: "black", name: "Black", classes: "bg-gray-900 checked:outline-gray-900" },
+  {
+    id: "black",
+    name: "Black",
+    classes: "bg-gray-900 checked:outline-gray-900",
+  },
 ];
 const sizes = [
   { name: "XXS", inStock: false },
@@ -234,12 +245,39 @@ export default function AdminProductDetail() {
                   </div>
                 )}
 
+                <div className="mt-8">
+                  {product.deleted && (
+                    <div>
+                      <p className="text-xl font-bold text-red-500 mt-1">
+                        Product is Deleted
+                      </p>
+                    </div>
+                  )}
+                  {product.stock <= 0 && (
+                    <div>
+                      <p className="text-xl font-bold text-red-500 mt-1">
+                        Out of Stock
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {!product.deleted && !product.stock <= 0 && (
+                  <button
+                    type="button"
+                    onClick={handleCart}
+                    className="cursor-pointer w-full mt-8 flex items-center justify-center rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    🛒 Add to Cart
+                  </button>
+                )}
+
                 <button
                   type="button"
-                  onClick={handleCart}
-                  className="cursor-pointer w-full mt-8 flex items-center justify-center rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  onClick={() => navigate("/cart")}
+                  className="cursor-pointer w-full mt-5 flex items-center justify-center rounded-md bg-gray-100 px-6 py-3 text-base font-semibold text-gray-800 shadow-sm hover:bg-gray-200 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400"
                 >
-                  🛒 Add to Cart
+                  🛍️ Go to Cart
                 </button>
 
                 <div className="mt-6 flex justify-center text-sm text-gray-500">
@@ -252,13 +290,6 @@ export default function AdminProductDetail() {
                     <ArrowRightIcon className="h-5 w-5 text-indigo-600" />
                   </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => navigate("/cart")}
-                  className="cursor-pointer w-full mt-5 flex items-center justify-center rounded-md bg-gray-100 px-6 py-3 text-base font-semibold text-gray-800 shadow-sm hover:bg-gray-200 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400"
-                >
-                  🛍️ Go to Cart
-                </button>
               </form>
             </div>
 

@@ -116,5 +116,6 @@ export const cartSlice = createSlice({
 
 export const selectItems = (state) => state.cart.items;
 export const selectItemStatus = (state) => state.cart.itemStatus;
+export const selectCartStatus = (state) => state.cart.status;
 export const { resetItemStatus } = cartSlice.actions;
 export default cartSlice.reducer;

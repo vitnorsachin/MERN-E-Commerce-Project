@@ -68,11 +68,11 @@ function AdminOrders() {
             <table className="w-full table-auto">
               <thead>
                 <tr className="bg-gray-100 border-b text-gray-600 uppercase text-sm leading-normal">
-                  <th className="py-3 px-6 text-left hover:bg-blue-200">
-                    <div
-                      className="flex items-center justify-center gap-2 cursor-pointer"
-                      onClick={() => handleSort("id")}
-                    >
+                  <th
+                    className="py-3 px-6 text-left hover:bg-blue-200 cursor-pointer"
+                    onClick={() => handleSort("id")}
+                  >
+                    <div className="flex items-center justify-center gap-2">
                       <span>Order</span>
                       <span>
                         {sort._sort === "id" ? (
@@ -91,11 +91,11 @@ function AdminOrders() {
                   <th className="py-3 px-6 text-left">Qty</th>
                   <th className="py-3 px-6 text-left">Price</th>
 
-                  <th className="py-3 px-6 text-center whitespace-nowrap hover:bg-blue-200">
-                    <div
-                      className="flex items-center justify-center gap-2 cursor-pointer"
-                      onClick={() => handleSort("totalAmount")}
-                    >
+                  <th
+                    className="py-3 px-6 text-center whitespace-nowrap hover:bg-blue-200 cursor-pointer"
+                    onClick={() => handleSort("totalAmount")}
+                  >
+                    <div className="flex items-center justify-center gap-2">
                       <span>Total Amount</span>
                       <span>
                         {sort._sort === "totalAmount" ? (
@@ -109,11 +109,11 @@ function AdminOrders() {
                     </div>
                   </th>
 
-                  <th className="py-3 px-6 text-center whitespace-nowrap hover:bg-blue-200">
-                    <div
-                      className="flex items-center justify-start gap-1 cursor-pointer"
-                      onClick={() => handleSort("status")}
-                    >
+                  <th 
+                    className="py-3 px-6 text-center whitespace-nowrap hover:bg-blue-200  cursor-pointer"
+                    onClick={() => handleSort("status")}
+                  >
+                    <div className="flex items-center justify-start gap-1">
                       <span>Status</span>
                       <span>
                         {sort._sort === "status" ? (

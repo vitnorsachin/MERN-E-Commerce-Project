@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
-
 import { Radio, RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -9,10 +8,12 @@ import { fetchProductByIdAsync, selectedProductById } from "../productSlice";
 import {
   addToCartAsync,
   resetItemStatus,
+  selectItems,
   selectItemStatus,
 } from "../../cart/cartSlice";
 import { selectLoggedInUser } from "../../auth/authSlice";
 import { discountedPrice } from "../../../app/constants";
+import { toast } from "react-toastify";
 
 // TODO : In server data we will add colors, sizes, highlights etc. to each product
 const colors = [
@@ -52,93 +53,68 @@ export default function ProductDetail() {
   const product = useSelector(selectedProductById);
   const user = useSelector(selectLoggedInUser);
   const params = useParams();
+  const items = useSelector(selectItems);
 
   const handleCart = (e) => {
     e.preventDefault();
-    const newItem = { ...product, quantity: 1, user: user.id };
-    delete newItem["id"];
-    dispatch(addToCartAsync(newItem));
+    if (items.findIndex((item) => item.productId === product.id) < 0) {
+      const newItem = {
+        ...product,
+        productId: product.id,
+        quantity: 1,
+        user: user.id,
+      };
+      delete newItem["id"];
+      dispatch(addToCartAsync(newItem));
+    } else {
+      toast.warn("Item already added", {
+        style: { fontSize: "0.9rem", fontWeight: "normal", color: "black" },
+      });
+    }
   };
 
   useEffect(() => {
     dispatch(fetchProductByIdAsync(params.id));
   }, [dispatch, params.id]);
 
-  // logic for showing "Item added to cart" message
+  //✅ logic for showing "Item added to cart" message
   const navigate = useNavigate();
   const itemStatus = useSelector(selectItemStatus);
   const [showMessage, setShowMessage] = useState(false);
   useEffect(() => {
     if (itemStatus === "success") {
+      toast.success("Item added", {
+        style: { fontSize: "0.9rem", fontWeight: "bold" },
+      });
       setShowMessage(true);
       const timer = setTimeout(() => {
         setShowMessage(false);
-        dispatch(resetItemStatus()); // ✅ reset Redux state
+        dispatch(resetItemStatus());
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [itemStatus]);
+  }, [itemStatus, dispatch]);
 
   return (
     <div className="bg-white">
       {product && (
         <div className="pt-6">
-          {/* <nav aria-label="Breadcrumb">
-          <ol
-            role="list"
-            className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
-          >
-            {product.breadcrumbs &&
-              product.breadcrumbs.map((breadcrumb) => (
-                <li key={breadcrumb.id}>
-                  <div className="flex items-center">
-                    <a
-                      href={breadcrumb.href}
-                      className="mr-2 text-sm font-medium text-gray-900"
-                    >
-                      {breadcrumb.name}
-                    </a>
-                    <svg
-                      fill="currentColor"
-                      width={16}
-                      height={20}
-                      viewBox="0 0 16 20"
-                      aria-hidden="true"
-                      className="h-5 w-4 text-gray-300"
-                    >
-                      <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                    </svg>
-                  </div>
-                </li>
-              ))}
-            <li className="text-sm">
-              <a
-                href={product.href}
-                aria-current="page"
-                className="font-medium text-gray-500 hover:text-gray-600"
-              >
-                {product.title}
-              </a>
-            </li>
-          </ol>
-        </nav> */}
-
           {/* Image gallery */}
           <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-8 lg:px-8">
             <img
               src={product.images[0]}
               alt={product.images.title}
-              className="row-span-2 aspect-3/4 size-full rounded-lg object-contain "
+              className="row-span-2 aspect-5/2 size-full rounded-lg object-contain "
             />
             <img
               src={product.images[1]}
               alt={product.images.title}
-              className="col-start-2 aspect-3/2 size-full rounded-lg object-contain max-lg:hidden"
+              className="col-start-2 aspect-5/2 size-full rounded-lg object-contain max-lg:hidden"
             />
             <img
               src={product.images[2]}
               alt={product.images.title}
-              className="col-start-2 row-start-2 aspect-3/2 size-full rounded-lg object-contain max-lg:hidden"
+              className="col-start-2 row-start-2 aspect-5/2 size-full rounded-lg object-contain max-lg:hidden"
             />
           </div>
 
@@ -273,49 +249,39 @@ export default function ProductDetail() {
                   </fieldset>
                 </div>
 
-                {/* ✅ Item add to cart Success Message */}
-                {showMessage && (
-                  <div className="col-span-full">
-                    <div className="my-8 rounded-md bg-green-100 p-3 border border-green-700 text-green-700 text-center font-medium">
-                      ✅ Item added to your cart
+                <div className="mt-8">
+                  {product.deleted && (
+                    <div>
+                      <p className="text-xl font-bold text-red-500 mt-1">
+                        Product is Deleted
+                      </p>
                     </div>
-                  </div>
-                )}
-
-                {/* <button
-                  type="submit"
-                  className="cursor-pointer mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
-                  onClick={handleCart}
-                >
-                  Add to Cart
-                </button>
-                <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
-                  <p>
-                    <Link to="/">
-                      <button
-                        type="button"
-                        onClick={() => setOpen(false)}
-                        className="ml-2 font-bold text-[16px] text-indigo-600 hover:text-indigo-500 cursor-pointer"
-                      >
-                        Continue Shopping
-                        <ArrowRightIcon className="inline h-5 w-8 text-black size-2" />
-                      </button>
-                    </Link>
-                  </p>
+                  )}
+                  {product.stock <= 0 && (
+                    <div>
+                      <p className="text-xl font-bold text-red-500 mt-1">
+                        Out of Stock
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <button
-                  type="submit"
-                  className="cursor-pointer mt-5 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
-                >
-                  Go to Cart
-                </button> */}
+
+                {!product.deleted && !product.stock <= 0 && (
+                  <button
+                    type="button"
+                    onClick={handleCart}
+                    className="cursor-pointer w-full mt-8 flex items-center justify-center rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    🛒 Add to Cart
+                  </button>
+                )}
 
                 <button
                   type="button"
-                  onClick={handleCart}
-                  className="cursor-pointer w-full mt-8 flex items-center justify-center rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  onClick={() => navigate("/cart")}
+                  className="cursor-pointer w-full mt-5 flex items-center justify-center rounded-md bg-gray-100 px-6 py-3 text-base font-semibold text-gray-800 shadow-sm hover:bg-gray-200 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400"
                 >
-                  🛒 Add to Cart
+                  🛍️ Go to Cart
                 </button>
 
                 <div className="mt-6 flex justify-center text-sm text-gray-500">
@@ -328,14 +294,6 @@ export default function ProductDetail() {
                     <ArrowRightIcon className="h-5 w-5 text-indigo-600" />
                   </button>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => navigate("/cart")}
-                  className="cursor-pointer w-full mt-5 flex items-center justify-center rounded-md bg-gray-100 px-6 py-3 text-base font-semibold text-gray-800 shadow-sm hover:bg-gray-200 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400"
-                >
-                  🛍️ Go to Cart
-                </button>
               </form>
             </div>
 

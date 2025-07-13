@@ -10,7 +10,8 @@ import {
 } from "../../product/productSlice";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Modal from "../../common/Modal";
 
 const ProductForm = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const ProductForm = () => {
   const dispatch = useDispatch();
   const params = useParams();
   const selectedProduct = useSelector(selectedProductById);
+  const [openModal, setOpenModal] = useState(null);
 
   const {
     register,
@@ -54,10 +56,10 @@ const ProductForm = () => {
   }, [selectedProduct, params.id, setValue]);
 
   const handleDelete = () => {
-    const product = {...selectedProduct};
+    const product = { ...selectedProduct };
     product.deleted = true;
     dispatch(updateProductAsync(product));
-  }
+  };
 
   return (
     <>
@@ -78,14 +80,21 @@ const ProductForm = () => {
             product.rating = selectedProduct?.rating ?? 0; // keep existing or fallback to 0
             dispatch(updateProductAsync(product));
             reset();
+            navigate("/admin"); // ✅ navigate after update
           } else {
             product.rating = 0;
             dispatch(createProductAsync(product));
             reset();
+            navigate("/admin"); // ✅ navigate after creation
           }
         })}
       >
         <div className="space-y-12 bg-white p-4 md:p-12 rounded-xl shadow-md">
+          {selectedProduct?.deleted && (
+            <p className="text-red-500 font-bold text-lg mb-6">
+              This product is deleted
+            </p>
+          )}
           <div className="border-b border-gray-900/10 pb-12">
             <h2 className="bg-gray-100 px-2 text-xl font-semibold text-gray-900">
               Add Product
@@ -243,7 +252,7 @@ const ProductForm = () => {
                     <input
                       id="discountPercentage"
                       {...register("discountPercentage", {
-                        required: "discountPercentage is required",
+                        required: "discount percentage is required",
                         min: 1,
                         max: {
                           value: 100,
@@ -276,7 +285,7 @@ const ProductForm = () => {
                       id="stock"
                       {...register("stock", {
                         required: "stock is required",
-                        min: 1,
+                        min: -1,
                         max: 1000000,
                       })}
                       type="number"
@@ -539,19 +548,29 @@ const ProductForm = () => {
             </div>
           </div>
         </div>
+
         <div className="mt-6 flex items-center justify-end gap-x-6">
           <button
             type="button"
-            className="cursor-pointer rounded-md px-3 py-2 text-sm font-semibold shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-cyan-100 text-cyan-900 border border-cyan-300 hover:bg-cyan-200"
+            onClick={() => navigate("/admin")}
+            className="cursor-pointer rounded-md px-3 py-2 text-sm font-semibold shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-indigo-500 text-white border border-indigo-600 hover:bg-indigo-600"
+          >
+            Go back
+          </button>
+
+          <button
+            type="button"
             onClick={() => reset()}
+            className="cursor-pointer rounded-md px-3 py-2 text-sm font-semibold shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-cyan-100 text-cyan-900 border border-cyan-300 hover:bg-cyan-200"
           >
             Reset
           </button>
 
-          {selectedProduct && (
+          {selectedProduct && !selectedProduct?.deleted && (
             <button
-              onClick={handleDelete}
-              className="text-sm/6 font-semibold text-gray-900 cursor-pointer rounded-md bg-red-400 px-3 py-1.5 shadow-xs  hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              type="button"
+              onClick={() => setOpenModal(true)}
+              className="text-sm/6 font-semibold text-white cursor-pointer rounded-md bg-red-500 px-3 py-1.5 shadow-xs  hover:bg-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Delete
             </button>
@@ -559,13 +578,26 @@ const ProductForm = () => {
 
           <button
             type="submit"
-            // onClick={() => navigate("/admin")}
-            className="cursor-pointer rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="cursor-pointer rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-green-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
           >
             Save
           </button>
         </div>
       </form>
+      <Modal
+        title={
+          <>
+            Delete{" "}
+            <span style={{ color: "green" }}>"{selectedProduct?.title}"</span>
+          </>
+        }
+        message="Are you sure you want to delete this Products?"
+        dangerOption="Delete"
+        cancelOption="Cancel"
+        dangerAction={handleDelete}
+        cancelAction={() => setOpenModal(null)}
+        showModal={openModal}
+      ></Modal>
     </>
   );
 };

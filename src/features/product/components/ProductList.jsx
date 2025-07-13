@@ -7,6 +7,7 @@ import {
   selectAllProducts,
   selectBrands,
   selectCategories,
+  selectProductListStatus,
   selectTotalItems,
 } from "../productSlice";
 import {
@@ -29,14 +30,11 @@ import {
   PlusIcon,
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  StarIcon,
-} from "@heroicons/react/20/solid";
+import { StarIcon } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
 import { discountedPrice, ITEMS_PER_PAGE } from "../../../app/constants";
 import Pagination from "../../common/Pagination";
+import { GridLoader } from "react-spinners"; // gridloader animation
 
 const sortOptions = [
   { name: "Best Rating", sort: "-rating", current: false },
@@ -62,6 +60,8 @@ export default function ProductList() {
   const brands = useSelector(selectBrands);
   const categories = useSelector(selectCategories);
   const totalItems = useSelector(selectTotalItems);
+  const status = useSelector(selectProductListStatus);
+
   const filters = [
     {
       id: "category",
@@ -209,7 +209,7 @@ export default function ProductList() {
                   filters={filters}
                 ></DesktopFilters>
 
-                <ProductGrid products={products}></ProductGrid>
+                <ProductGrid products={products} status={status}></ProductGrid>
               </div>
             </section>
             <Pagination
@@ -432,7 +432,21 @@ function DesktopFilters({ handleFilter, filters }) {
   );
 }
 
-function ProductGrid({ products }) {
+function ProductGrid({ products, status }) {
+  // if (status === "loading") {
+  //   return (
+  //     <div className="col-span-2  flex justify-center items-center w-full">
+  //       <GridLoader
+  //         color="#d33ff4"
+  //         loading={true}
+  //         margin={10}
+  //         size={25}
+  //         speedMultiplier={2}
+  //       />
+  //     </div>
+  //   );
+  // }
+
   return (
     <>
       {/* Product grid */}
@@ -440,48 +454,71 @@ function ProductGrid({ products }) {
         {/* // This is productList----------------------------------------------------------------------------------------------------- */}
         <div className="bg-white">
           <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
-            <div className="mt-1 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-              {products.map((product) => (
-                <div
-                  key={product.id}
-                  className="transition duration-300 ease-in-out transform hover:scale-110 shadow-2xs hover:shadow-2xl group relative border-solid p-2 border-2 border-gray-200 rounded-xl"
-                >
-                  <Link to={`/product-detail/${product.id}`}>
-                    <img
-                      alt={product.title}
-                      src={product.thumbnail}
-                      className="aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-60"
-                      loading="lazy"
-                    />
+            {status === "loading" ? (
+              <div className="col-span-2 mt-10 flex justify-center items-center w-full">
+                <GridLoader
+                  color="#4639fa"
+                  loading={true}
+                  margin={10}
+                  size={25}
+                  speedMultiplier={2}
+                />
+              </div>
+            ) : (
+              <div className="mt-1 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+                {products.map((product) => (
+                  <div
+                    key={product.id}
+                    className="transition duration-300 ease-in-out transform hover:scale-110 shadow-2xs hover:shadow-2xl group relative border-solid p-2 border-2 border-gray-200 rounded-xl"
+                  >
+                    <Link to={`/product-detail/${product.id}`}>
+                      <img
+                        alt={product.title}
+                        src={product.thumbnail}
+                        className="aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-60"
+                        loading="lazy"
+                      />
 
-                    <div className="mt-4 flex justify-between">
+                      <div className="mt-4 flex justify-between">
+                        <div>
+                          <h3 className="text-sm text-gray-700">
+                            {product.title}
+                          </h3>
+                          <p className="mt-1 text-sm text-gray-500">
+                            <StarIcon className="w-5 h-5 inline" />
+                            <span className="align-bottom ml-1">
+                              {product.rating}
+                            </span>
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            ${discountedPrice(product)}
+                          </p>
+                          <p className="text-sm line-through font-medium text-gray-500">
+                            ${product.price}
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                    {product.deleted && (
                       <div>
-                        <h3 className="text-sm text-gray-700">
-                          {product.title}
-                        </h3>
-                        <p className="mt-1 text-sm text-gray-500">
-                          <StarIcon className="w-5 h-5 inline" />
-                          <span className="align-bottom ml-1">
-                            {product.rating}
-                          </span>
+                        <p className="text-sm text-red-500 mt-1 font-medium">
+                          Product is Deleted
                         </p>
                       </div>
+                    )}
+                    {product.stock <= 0 && (
                       <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          ${discountedPrice(product)}
-                        </p>
-                        <p className="text-sm line-through font-medium text-gray-500">
-                          ${product.price}
+                        <p className="text-sm text-red-500 mt-1 font-medium">
+                          Out of Stock
                         </p>
                       </div>
-                    </div>
-                  </Link>
-                  <div>
-                    {product.deleted && <p className="text-sm text-red-500 mt-1">Product is Deleted</p>}
+                    )}
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

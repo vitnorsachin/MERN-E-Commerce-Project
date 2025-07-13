@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { createUserAsync, selectLoggedInUser } from "../authSlice";
+import { toast } from "react-toastify";
 
 export function Signup() {
   const {
@@ -25,8 +26,8 @@ export function Signup() {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             alt="Your Company"
-            src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-            className="mx-auto h-10 w-auto"
+            src="ecommerce.png"
+            className="mx-auto h-12 w-auto"
           />
           <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
             Create a New Account
@@ -47,6 +48,7 @@ export function Signup() {
                   //TODO: This role can be diectly given on backend
                 })
               );
+              toast.success("Signup successfull", {style: { fontSize: "0.9rem",fontWeight: "bold"}})
             })}
           >
             

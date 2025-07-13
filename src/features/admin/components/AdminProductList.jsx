@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  fetchAllProductsAsync,
   fetchBrandsAsync,
   fetchCategoriesAsync,
   fetchProductsByFiltersAsync,
   selectAllProducts,
   selectBrands,
   selectCategories,
+  selectProductListStatus,
   selectTotalItems,
 } from "../../product/productSlice";
 import {
@@ -30,11 +30,7 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  StarIcon,
-} from "@heroicons/react/20/solid";
+import {StarIcon,} from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
 import { discountedPrice, ITEMS_PER_PAGE } from "../../../app/constants";
 import Pagination from "../../common/Pagination";
@@ -450,9 +446,7 @@ function ProductGrid({ products }) {
             <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
               {products.map((product) => (
                 <div key={product.id}>
-                  <div
-                    className="group relative border-solid p-2 border-2 border-gray-200 rounded-xl"
-                  >
+                  <div className="group relative border-solid p-2 border-2 border-gray-200 rounded-xl">
                     <Link to={`/admin/product-detail/${product.id}`}>
                       <img
                         alt={product.title}
@@ -484,7 +478,20 @@ function ProductGrid({ products }) {
                       </div>
                     </Link>
                     <div>
-                      {product.deleted && <p className="text-sm text-red-500 mt-1">Product is Deleted</p>}
+                      {product.deleted && (
+                        <div>
+                          <p className="text-sm text-red-500 mt-1 font-medium">
+                            Product is Deleted
+                          </p>
+                        </div>
+                      )}
+                      {product.stock <=0 && (
+                        <div>
+                          <p className="text-sm text-red-500 mt-1 font-medium">
+                            Out of Stock
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="mt-4">

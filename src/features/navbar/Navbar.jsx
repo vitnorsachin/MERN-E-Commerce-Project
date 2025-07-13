@@ -13,9 +13,10 @@ import {
   ShoppingCartIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectItems } from "../cart/cartSlice";
 import { selectLoggedInUser } from "../auth/authSlice";
+// import { increment, selectCount } from "../counter/counterSlice";
 
 const user = {
   name: "Tom Cook",
@@ -24,9 +25,8 @@ const user = {
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 };
 const navigation = [
-  { name: "Dashboard", link: "dashboard", user: true },
-  { name: "Team", link: "team", user: true },
-  { name: "Admin", link: "/admin", admin: true },
+  { name: "Products", link: "/", user: true },
+  { name: "Products", link: "/admin", admin: true },
   { name: "Orders", link: "/admin/orders", admin: true }, 
 ];
 const userNavigation = [
@@ -40,6 +40,8 @@ function classNames(...classes) {
 }
 
 const NavBar = ({ children }) => {
+  // const count = useSelector(selectCount);
+  // const dispatch = useDispatch();
   const items = useSelector(selectItems);
   const user = useSelector(selectLoggedInUser);
   if (!user) {
@@ -50,7 +52,7 @@ const NavBar = ({ children }) => {
   return (
     <>
       <div className="min-h-full">
-        <Disclosure as="nav" className="bg-gray-800">
+        <Disclosure as="nav" className="bg-gray-800 sticky top-0 z-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center">
@@ -58,8 +60,8 @@ const NavBar = ({ children }) => {
                   <div className="shrink-0">
                     <img
                       alt="Your Company"
-                      src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                      className="size-8"
+                      src="/ecommerce.png"
+                      className="size-11"
                     />
                   </div>
                 </Link>
@@ -109,13 +111,7 @@ const NavBar = ({ children }) => {
                       <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:ring-1 focus:ring-white focus:ring-offset-1 focus:ring-offset-gray-800 focus:outline-hidden">
                         <span className="cursor-pointer absolute -inset-1.5" />
                         <span className="sr-only">Open user menu</span>
-                        {/* <img
-                          alt=""
-                          src={user.imageUrl}
-                          className="size-8 rounded-full"
-                        /> */}
-
-                        {/* 🟢 */}
+                        {/* 🟢 my logic*/}
                         <h1 className="text-white font-bold border-2 border-teal-400 px-3.5 py-1.5 rounded-full w-10 h-10 flex items-center justify-center">
                           {userFirstChar}
                         </h1>
