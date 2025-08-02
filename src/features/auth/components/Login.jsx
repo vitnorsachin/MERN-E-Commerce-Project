@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
@@ -15,6 +15,14 @@ export function Login() {
     formState: { errors },
   } = useForm();
   // console.log(errors);
+
+  useEffect(() => {
+    if (user) {
+      toast.success("Login Successfull", {
+        style: { fontSize: "0.9rem", fontWeight: "bold" },
+      });
+    }
+  }, [user]);
 
   return (
     <>
@@ -38,8 +46,7 @@ export function Login() {
             onSubmit={handleSubmit((data) => {
               // console.log(data);
               dispatch(
-                checkUserAsync({ email: data.email, password: data.password }),
-                toast.success("Login Successfull", {style: { fontSize: "0.9rem",fontWeight: "bold"}})
+                checkUserAsync({ email: data.email, password: data.password })
               );
             })}
           >

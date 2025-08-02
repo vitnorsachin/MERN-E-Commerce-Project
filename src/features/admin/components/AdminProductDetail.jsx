@@ -49,7 +49,6 @@ function classNames(...classes) {
 }
 
 export default function AdminProductDetail() {
-  const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const dispatch = useDispatch();
   const product = useSelector(selectedProductById);
@@ -77,7 +76,7 @@ export default function AdminProductDetail() {
       const timer = setTimeout(() => {
         setShowMessage(false);
         dispatch(resetItemStatus()); // ✅ reset Redux state
-      }, 3000);
+      }, 1000);
       return () => clearTimeout(timer);
     }
   }, [itemStatus]);

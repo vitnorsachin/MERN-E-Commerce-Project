@@ -27,7 +27,7 @@ const user = {
 const navigation = [
   { name: "Products", link: "/", user: true },
   { name: "Products", link: "/admin", admin: true },
-  { name: "Orders", link: "/admin/orders", admin: true }, 
+  { name: "Orders", link: "/admin/orders", admin: true },
 ];
 const userNavigation = [
   { name: "My Profile", link: "/profile" },
@@ -47,7 +47,7 @@ const NavBar = ({ children }) => {
   if (!user) {
     return <Navigate to="/" replace />;
   }
-  const userFirstChar = user.email.charAt(0).toUpperCase();
+  const userFirstChar = user ? user.email.charAt(0).toUpperCase() : null;
 
   return (
     <>
@@ -188,6 +188,7 @@ const NavBar = ({ children }) => {
                 </div>
                 <div className="ml-3">
                   <div className="text-base/5 font-medium text-white">
+                    {/* this should come from userInfo */}
                     {user.name}
                   </div>
                   <div className="text-sm font-medium text-gray-400">

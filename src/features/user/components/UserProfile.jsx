@@ -3,12 +3,16 @@ import { selectUserInfo, updateUserAsync } from "../userSlice";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { PlusIcon } from "@heroicons/react/16/solid";
+import Modal from "../../common/Modal";
 
 export default function UserProfile() {
   const dispatch = useDispatch();
-  const user = useSelector(selectUserInfo);
+  const userInfo = useSelector(selectUserInfo);
+  // console.log(userInfo);
   const [selectedEditIndex, setSelectedEditIndex] = useState(-1);
   const [showAddAddressForm, setShowAddAddressForm] = useState(false);
+  const [openModal, setOpenModal] = useState(null);
+  
 
   const {
     register,
@@ -19,13 +23,13 @@ export default function UserProfile() {
   } = useForm();
 
   const handleRemove = (e, index) => {
-    const newUser = { ...user, addresses: [...user.addresses] }; // for shallow copy issue
+    const newUser = { ...userInfo, addresses: [...userInfo.addresses] }; // for shallow copy issue
     newUser.addresses.splice(index, 1); // remove address as given index
-    dispatch(updateUserAsync(newUser)); // send newUser updated user to
+    dispatch(updateUserAsync(newUser)); // send newUser updated userInfo to
   };
 
   const handleEdit = (addressUpdate, index) => {
-    const newUser = { ...user, addresses: [...user.addresses] };
+    const newUser = { ...userInfo, addresses: [...userInfo.addresses] };
     newUser.addresses.splice(index, 1, addressUpdate); // undestand this how splice works
     dispatch(updateUserAsync(newUser));
     setSelectedEditIndex(-1);
@@ -33,7 +37,7 @@ export default function UserProfile() {
 
   const handleEditForm = (index) => {
     setSelectedEditIndex(index);
-    const address = user.addresses[index];
+    const address = userInfo.addresses[index];
     setValue("name", address.name);
     setValue("email", address.email);
     setValue("phone", address.phone);
@@ -44,7 +48,7 @@ export default function UserProfile() {
   };
 
   const handleAdd = (address) => {
-    const newUser = { ...user, addresses: [...user.addresses, address] };// undestand this how it works
+    const newUser = { ...userInfo, addresses: [...userInfo.addresses, address] }; // undestand this how it works
     dispatch(updateUserAsync(newUser));
     setShowAddAddressForm(false);
   };
@@ -55,15 +59,17 @@ export default function UserProfile() {
       <div className="mx-auto bg-white max-w-7xl px-4 sm:px-6 lg:px-10 rounded-xl shadow-md">
         <div className="border-t border-gray-200 py-6 sm:px-6">
           <h1 className="text-2xl my-5 font-bold tracking-tight text-gray-900">
-            {/* Name : {user.name ? user.name : "Guest User"}🟡 update in future */}
-            Name : {user?.name || user?.addresses?.[0]?.name || "Guest User"}
+            {/* Name : {userInfo.name ? userInfo.name : "Guest User"}🟡 update in future */}
+            Name : {userInfo?.name || userInfo?.addresses?.[0]?.name || "Guest User"}
           </h1>
           <h3 className="mb-0 text-lg text-blue-500 my-5 font-bold tracking-tight">
-            Email address : {user.email}
+            Email address : {userInfo.email}
           </h3>
-          {user.role === "admin" && <h3 className="bg-amber-400 inline-block py-1 px-2 mb-0 text-lg my-5 font-bold tracking-tight">
-            Role : {user.role}
-          </h3>}
+          {userInfo.role === "admin" && (
+            <h3 className="bg-amber-400 inline-block py-1 px-2 mb-0 text-lg my-5 font-bold tracking-tight">
+              Role : {userInfo.role}
+            </h3>
+          )}
         </div>
         <div className="border-t border-gray-200 py-6 sm:px-6">
           <button
@@ -84,7 +90,7 @@ export default function UserProfile() {
               className="bg-white px-4 pb-12 pt-5"
               noValidate
               onSubmit={handleSubmit((data) => {
-                console.log(data);
+                // console.log(data);
                 handleAdd(data);
                 reset();
               })}
@@ -301,8 +307,9 @@ export default function UserProfile() {
           ) : null}
 
           <p className="mb-4 -mt-1 text-sm text-gray-500">Your Addresses : </p>
-          {user.addresses.map((address, index) => (
-            <div>
+          {userInfo.addresses.map((address, index) => (
+            <div key={address.email}>
+              {/* {console.log(address)} */}
               {selectedEditIndex === index ? (
                 <form
                   className="bg-white px-4 pb-12 pt-5"
@@ -548,13 +555,32 @@ export default function UserProfile() {
                   >
                     Edit
                   </button>
-                  <button
-                    type="button"
-                    className="cursor-pointer px-4 py-1.5 rounded-md text-sm font-medium text-white bg-red-500 hover:bg-red-600 transition-colors duration-200 shadow-sm"
-                    onClick={(e) => handleRemove(e, index)}
-                  >
-                    Remove
-                  </button>
+          
+                  <div className="flex">
+                    <Modal
+                      title={
+                        <>
+                          Delete Address :{" "}
+                          <span style={{ color: "red" }}>
+                            "{address.name}"
+                          </span>
+                        </>
+                      }
+                      message="Are you sure you want to delete this address?"
+                      dangerOption="Delete"
+                      cancelOption="Cancel"
+                      dangerAction={(e) => handleRemove(e, index)}
+                      cancelAction={() => setOpenModal(null)}
+                      showModal={openModal === address.email}
+                    ></Modal>
+                    <button
+                      type="button"
+                      className="cursor-pointer px-4 py-1.5 rounded-md text-sm font-medium text-white bg-red-500 hover:bg-red-600 transition-colors duration-200 shadow-sm"
+                      onClick={() => setOpenModal(address.email)}
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

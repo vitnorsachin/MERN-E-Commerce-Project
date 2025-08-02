@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createUser, checkUser, signOut } from "./authAPI";
-import { updateUser } from "../user/userAPI";
+// import { updateUser } from "../user/userAPI";
 
 const initialState = {
-  loggedInUser: null,
+  loggedInUser: null, // this should only contain user identity => "id", "role"
   error:null,
   status: "idle",
 };
@@ -24,13 +24,13 @@ export const checkUserAsync = createAsyncThunk(
   return user;
 });
 
-export const updateUserAsync = createAsyncThunk(
-  "user/updateUser",
-  async (update) => {
-    const user = await updateUser(update);
-    return user;
-  }
-);
+// export const updateUserAsync = createAsyncThunk(
+//   "user/updateUser",
+//   async (update) => {
+//     const user = await updateUser(update);
+//     return user;
+//   }
+// );
 
 export const signOutAsync = createAsyncThunk(
   "user/signOut",
@@ -73,13 +73,13 @@ export const authSlice = createSlice({
         state.error = action.error;
         state.loggedInUser = null;
       })
-      .addCase(updateUserAsync.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(updateUserAsync.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.loggedInUser = action.payload;
-      })
+      // .addCase(updateUserAsync.pending, (state) => {
+      //   state.status = "loading";
+      // })
+      // .addCase(updateUserAsync.fulfilled, (state, action) => {
+      //   state.status = "idle";
+      //   state.loggedInUser = action.payload;
+      // })
       .addCase(signOutAsync.pending, (state) => {
         state.status = "loading";
       })

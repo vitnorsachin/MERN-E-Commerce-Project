@@ -50,7 +50,7 @@ let router = createBrowserRouter([
     element: <Protected><Checkout /></Protected>,
   },
   {
-    path: "/product-detail/:id",
+    path: "/products/:id",
     element: <Protected><ProductDetailPage/></Protected>,
   },
   {

@@ -35,10 +35,16 @@ import { Link } from "react-router-dom";
 import { discountedPrice, ITEMS_PER_PAGE } from "../../../app/constants";
 import Pagination from "../../common/Pagination";
 
-const sortOptions = [
-  { name: "Best Rating", sort: "-rating", current: false },
-  { name: "Price: Low to High", sort: "price", current: false },
-  { name: "Price: High to Low", sort: "-price", current: false },
+// const sortOptions = [  // for json-server(data.json file) as backend
+//   { name: "Best Rating", sort: "-rating", current: false },
+//   { name: "Price: Low to High", sort: "price", current: false },
+//   { name: "Price: High to Low", sort: "-price", current: false },
+// ];
+
+const sortOptions = [// for mongodb as backend
+  { name: "Best Rating", sort: "rating", order: "desc", current: false },
+  { name: "Price: Low to High", sort: "price", order: "asc", current: false },
+  { name: "Price: High to Low", sort: "price", order: "desc", current: false },
 ];
 const subCategories = [
   { name: "Totes", href: "#" },
@@ -96,7 +102,8 @@ export default function AdminProductList() {
   };
 
   const handleSort = (e, option) => {
-    const sort = { _sort: option.sort };
+    // const sort = { _sort: option.sort };    // for json-server(data.json file) as backend
+    const sort = { _sort: option.sort, _order:option.order }; // for mongodb as backend
     console.log({ sort });
     setSort(sort);
   };
@@ -107,7 +114,8 @@ export default function AdminProductList() {
   };
 
   useEffect(() => {
-    const pagination = { _page: page, _per_page: ITEMS_PER_PAGE };
+    const pagination = { _page: page, _per_page: ITEMS_PER_PAGE }; // for json-server(data.json file) as backend
+    // const pagination = { _page: page, _limit: ITEMS_PER_PAGE }; // for mongodb as backend
     dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination }));
   }, [dispatch, filter, sort, page]);
 

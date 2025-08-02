@@ -10,7 +10,7 @@ export function fetchAllProducts() {
 
 export function fetchProductById(id) {
   return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:8080/products/"+id );
+    const response = await fetch("http://localhost:8080/products/" + id);
     const data = await response.json();
     resolve({ data });
   });
@@ -43,10 +43,20 @@ export function fetchProductsByFilters(filter, sort, pagination) {
   return new Promise(async (resolve) => {
     // http://localhost:8080/products?_sort=-price : for price sort Descending order(-)sign
     // http://localhost:8080/products?_sort=price : for price sort Acending order
-    const response = await fetch(`http://localhost:8080/products?${queryString}`); 
-    const result = await response.json();
-    const totalItems = result.items;
-    resolve({ data: {products: result.data, totalItems: +totalItems }});
+    try {
+
+      // console.log("Query String: ",queryString);
+
+      const response = await fetch(`http://localhost:8080/products?${queryString}`);
+      const result = await response.json();
+      const totalItems = result.items;
+
+      // console.log("Result: ",result)
+
+      resolve({ data: { products: result.data, totalItems: +totalItems } });
+    } catch (error) {
+      console.error(error);
+    }
   });
 }
 
@@ -66,25 +76,28 @@ export function fetchBrands() {
   });
 }
 
-export function createProduct(product) { 
+export function createProduct(product) {
   return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:8080/products/",{
+    const response = await fetch("http://localhost:8080/products/", {
       method: "POST",
       body: JSON.stringify(product),
-      headers: {'content-type':'application/json'}
-    })
+      headers: { "content-type": "application/json" },
+    });
     const data = await response.json();
     resolve({ data });
-  })
+  });
 }
 
 export function updateProduct(update) {
   return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:8080/products/" + update.id, {
-      method: "PATCH",
-      body: JSON.stringify(update),
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await fetch(
+      "http://localhost:8080/products/" + update.id,
+      {
+        method: "PATCH",
+        body: JSON.stringify(update),
+        headers: { "Content-Type": "application/json" },
+      }
+    );
     const data = await response.json();
     resolve({ data });
   });

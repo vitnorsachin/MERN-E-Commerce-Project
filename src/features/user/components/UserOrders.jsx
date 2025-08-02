@@ -11,14 +11,15 @@ import { discountedPrice } from "../../../app/constants";
 
 export function UserOrders() {
   const dispatch = useDispatch();
-  const user = useSelector(selectUserInfo);
+  const userInfo = useSelector(selectUserInfo);
   const orders = useSelector(selectUserOrders);
+  // console.log(orders)
 
   useEffect(() => {
-    if (user?.id) {
-      dispatch(fetchLoggedInUserOrdersAsync(user.id));
+    if (userInfo?.id) {
+      dispatch(fetchLoggedInUserOrdersAsync(userInfo.id));
     }
-  }, [dispatch, user?.id]);
+  }, [dispatch, userInfo?.id]);
 
   if (!orders) {
     return (
@@ -73,8 +74,8 @@ export function UserOrders() {
                 <li key={item.id} className="flex py-6 gap-4">
                   <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
                     <img
-                      src={item.thumbnail}
-                      alt={item.title}
+                      src={item.product.thumbnail}
+                      alt={item.product.title}
                       className="size-full object-cover"
                     />
                   </div>
@@ -82,11 +83,15 @@ export function UserOrders() {
                   <div className="flex flex-1 flex-col">
                     <div className="flex justify-between text-base font-medium text-gray-900">
                       <h3>
-                        <Link to={item.href}>{item.title}</Link>
+                        <Link to={"/"}>{item.product.title}</Link>
                       </h3>
-                      <p className="ml-4">${discountedPrice(item)}</p>
+                      <p className="ml-4 bg-green-300 px-2 py-1 rounded">
+                        ${discountedPrice(item.product)}
+                      </p>
                     </div>
-                    <p className="mt-1 text-sm text-gray-500">{item.brand}</p>
+                    <p className="mt-1 text-sm text-gray-500">
+                      {item.product.brand}
+                    </p>
                     <div className="mt-2 text-sm text-gray-600">
                       Qty: {item.quantity}
                     </div>
@@ -96,30 +101,41 @@ export function UserOrders() {
             </ul>
 
             <div className="border-t border-gray-200 pt-4 pb-6">
-              <div className="flex justify-between text-base font-medium text-gray-900">
-                <p>Subtotal</p>
-                <p>${order.totalAmount}</p>
+              <div className="flex justify-between text-base font-medium text-gray-900 ">
+                <p>Subtotal :</p>
+                <p className="bg-green-400 px-2 py-1 rounded">
+                  ${order.totalAmount}.00
+                </p>
               </div>
               <div className="flex justify-between text-base font-medium text-gray-900 mt-2">
-                <p>Total Items</p>
-                <p>{order.totalItems} Items</p>
+                <p>Total Items :</p>
+                <p className="bg-yellow-200 px-2 py-1 rounded">
+                  {order.totalItems} Items
+                </p>
               </div>
 
               <div className="mt-4">
                 <p className="text-sm text-gray-500 mb-2">Shipping Address:</p>
-                <div className="border p-4 rounded bg-gray-50">
-                  <p className="text-sm font-semibold text-gray-800">
-                    {order.selectedAddress.name}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {order.selectedAddress.street}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Phone: {order.selectedAddress.phone}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {order.selectedAddress.state}
-                  </p>
+                <div className="flex justify-between border p-4 rounded bg-gray-50">
+                  <div>
+                    <p className="text-sm font-bold text-gray-800">
+                      {order.selectedAddress.name}
+                    </p>
+                    <p className="text-sm text-gray-800">
+                      {order.selectedAddress.street}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {order.selectedAddress.street}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">
+                      Phone: {order.selectedAddress.phone}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {order.selectedAddress.state}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -129,7 +145,6 @@ export function UserOrders() {
     </>
   );
 }
-
 
 // Old Code
 // import React, { useEffect } from "react";
@@ -142,11 +157,11 @@ export function UserOrders() {
 
 // export function UserOrders() {
 //   const dispatch = useDispatch();
-//   const user = useSelector(selectUserInfo);
+//   const userInfo = useSelector(selectUserInfo);
 //   const orders = useSelector(selectUserOrders);
 
 //   useEffect(() => {
-//     dispatch(fetchLoggedInUserOrdersAsync(user.id));
+//     dispatch(fetchLoggedInUserOrdersAsync(userInfo.id));
 //   }, [dispatch]);
 
 //   return (

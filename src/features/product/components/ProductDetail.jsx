@@ -3,7 +3,7 @@ import { StarIcon } from "@heroicons/react/20/solid";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchProductByIdAsync, selectedProductById } from "../productSlice";
 import {
   addToCartAsync,
@@ -47,24 +47,22 @@ function classNames(...classes) {
 }
 
 export default function ProductDetail() {
-  const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const dispatch = useDispatch();
   const product = useSelector(selectedProductById);
+  // console.log(product);
   const user = useSelector(selectLoggedInUser);
   const params = useParams();
   const items = useSelector(selectItems);
 
   const handleCart = (e) => {
     e.preventDefault();
-    if (items.findIndex((item) => item.productId === product.id) < 0) {
+    if (items.findIndex((item) => item.product.id === product.id) < 0) {
       const newItem = {
-        ...product,
-        productId: product.id,
+        product: product.id,
         quantity: 1,
         user: user.id,
       };
-      delete newItem["id"];
       dispatch(addToCartAsync(newItem));
     } else {
       toast.warn("Item already added", {
@@ -77,20 +75,17 @@ export default function ProductDetail() {
     dispatch(fetchProductByIdAsync(params.id));
   }, [dispatch, params.id]);
 
-  //✅ logic for showing "Item added to cart" message
+  
   const navigate = useNavigate();
   const itemStatus = useSelector(selectItemStatus);
-  const [showMessage, setShowMessage] = useState(false);
   useEffect(() => {
     if (itemStatus === "success") {
       toast.success("Item added", {
         style: { fontSize: "0.9rem", fontWeight: "bold" },
       });
-      setShowMessage(true);
       const timer = setTimeout(() => {
-        setShowMessage(false);
         dispatch(resetItemStatus());
-      }, 3000);
+      }, 100);
       return () => clearTimeout(timer);
     }
   }, [itemStatus, dispatch]);
