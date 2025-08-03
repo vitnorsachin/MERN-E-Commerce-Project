@@ -20,9 +20,11 @@ function AdminOrders() {
   const [page, setPage] = useState(1);
   const dispatch = useDispatch();
   const orders = useSelector(selectOrders);
+  console.log(orders);
   const totalOrders = useSelector(selectTotalOrders);
   const [editableOrderId, setEditableOrderId] = useState(-1);
-  const [sort, setSort] = useState({ _sort: "id" });
+  // const [sort, setSort] = useState({ _sort: "id" });
+  const [sort, setSort] = useState({ _sort: "_id", _order: "asc" });
 
   const handleEdit = (order) => {
     setEditableOrderId(order.id);
@@ -32,27 +34,34 @@ function AdminOrders() {
     console.log("show");
   };
 
-  const handleUpdate = (e, order) => {
+  const handleOrderStatus = (e, order) => {
     const updatedOrder = { ...order, status: e.target.value };
     dispatch(updateOrderAsync(updatedOrder));
     setEditableOrderId(-1);
   };
 
-  const handleSort = (field) => {
-    const currentSort = sort._sort;
-    let newSort;
-    if (currentSort === field) {
-      newSort = `-${field}`;
-    } else if (currentSort === `-${field}`) {
-      newSort = field;
-    } else {
-      newSort = field;
-    }
-    setSort({ _sort: newSort });
+  // const handleSort = (field) => {
+  //   const currentSort = sort._sort;
+  //   let newSort;
+  //   if (currentSort === field) {
+  //     newSort = `-${field}`;
+  //   } else if (currentSort === `-${field}`) {
+  //     newSort = field;
+  //   } else {
+  //     newSort = field;
+  //   }
+  //   setSort({ _sort: newSort });
+  // };
+
+  const handleSort = (sortOption) => {
+    const sort = { _sort: sortOption.sort, _order: sortOption.order };
+    console.log({ sort });
+    setSort(sort);
   };
 
   useEffect(() => {
-    const pagination = { _page: page, _per_page: ITEMS_PER_PAGE };
+    // const pagination = { _page: page, _per_page: ITEMS_PER_PAGE }; // for json-server(data.json file) as backend
+    const pagination = { _page: page, _limit: ITEMS_PER_PAGE }; // for mongodb as backend
     dispatch(fetchAllOrdersAsync({ sort, pagination }));
   }, [dispatch, page, sort]);
 
@@ -67,17 +76,23 @@ function AdminOrders() {
           <div className="bg-white shadow-md rounded my-6">
             <table className="w-full table-auto">
               <thead>
-                <tr className="bg-gray-100 border-b text-gray-600 uppercase text-sm leading-normal">
+                <tr className="bg-gray-100 border-b text-gray-600 uppercase text-sm leading-normal select-none">
                   <th
                     className="py-3 px-6 text-left hover:bg-blue-200 cursor-pointer"
-                    onClick={() => handleSort("id")}
+                    // onClick={() => handleSort("id")}
+                    onClick={(e) =>
+                      handleSort({
+                        sort: "_id",
+                        order: sort?._order === "asc" ? "desc" : "asc",
+                      })
+                    }
                   >
                     <div className="flex items-center justify-center gap-2">
-                      <span>Order</span>
+                      <span>Order Id</span>
                       <span>
-                        {sort._sort === "id" ? (
+                        {sort._sort === "_id" && sort._order === "asc" ? (
                           <ChevronDownIcon className="w-5 h-5 text-blue-600" />
-                        ) : sort._sort === "-id" ? (
+                        ) : sort._sort === "_id" && sort._order === "desc" ? (
                           <ChevronUpIcon className="w-5 h-5 text-blue-700" />
                         ) : (
                           <ArrowsUpDownIcon className="w-5 h-5 text-blue-700" />
@@ -93,14 +108,21 @@ function AdminOrders() {
 
                   <th
                     className="py-3 px-6 text-center whitespace-nowrap hover:bg-blue-200 cursor-pointer"
-                    onClick={() => handleSort("totalAmount")}
+                    // onClick={() => handleSort("totalAmount")}
+                    onClick={(e) =>
+                      handleSort({
+                        sort: "totalAmount",
+                        order: sort?._order === "asc" ? "desc" : "asc",
+                      })
+                    }
                   >
                     <div className="flex items-center justify-center gap-2">
                       <span>Total Amount</span>
                       <span>
-                        {sort._sort === "totalAmount" ? (
+                        {sort._sort === "totalAmount" && sort._order === "asc" ? (
                           <ChevronDownIcon className="w-5 h-5 text-blue-600" />
-                        ) : sort._sort === "-totalAmount" ? (
+                        ) : sort._sort === "totalAmount" &&
+                          sort._order === "desc" ? (
                           <ChevronUpIcon className="w-5 h-5 text-blue-700" />
                         ) : (
                           <ArrowsUpDownIcon className="w-5 h-5 text-blue-700" />
@@ -109,16 +131,23 @@ function AdminOrders() {
                     </div>
                   </th>
 
-                  <th 
+                  <th
                     className="py-3 px-6 text-center whitespace-nowrap hover:bg-blue-200  cursor-pointer"
-                    onClick={() => handleSort("status")}
+                    // onClick={() => handleSort("status")}
+                    onClick={(e) =>
+                      handleSort({
+                        sort: "status",
+                        order: sort?._order === "asc" ? "desc" : "asc",
+                      })
+                    }
                   >
                     <div className="flex items-center justify-start gap-1">
                       <span>Status</span>
                       <span>
-                        {sort._sort === "status" ? (
+                        {sort._sort === "status" && sort._order === "asc" ? (
                           <ChevronDownIcon className="w-5 h-5 text-blue-600" />
-                        ) : sort._sort === "-status" ? (
+                        ) : sort._sort === "status" &&
+                          sort._order === "desc" ? (
                           <ChevronUpIcon className="w-5 h-5 text-blue-700" />
                         ) : (
                           <ArrowsUpDownIcon className="w-5 h-5 text-blue-700" />
@@ -132,13 +161,15 @@ function AdminOrders() {
               </thead>
               <tbody className="text-gray-600 text-sm font-light">
                 {/*🟢 Order List */}
-                {orders.map((order) => (
+                {orders?.map((order) => (
                   <tr
                     key={order.id}
-                    className="border-b border-gray-300 hover:bg-gray-100"
+                    className="border-b border-gray-300 hover:bg-gray-100 bg-white"
                   >
-                    <td className="py-3 px-6 text-left whitespace-nowrap">
-                      <span className="font-bold bg-amber-300 px-3 py-0.5 rounded-2xl">
+                    {/* <td className="py-3 px-6 text-left whitespace-nowrap">
+                      <span className="font-bold bg-amber-300 px-3 py-0.5 rounded-2xl"> */}
+                    <td className="py-3 px-6 text-left whitespace-nowrap max-w-[150px]">
+                      <span className="font-bold bg-amber-300 px-3 py-0.5 rounded-2xl block overflow-hidden text-ellipsis whitespace-nowrap">
                         #{order.id}
                       </span>
                     </td>
@@ -167,11 +198,12 @@ function AdminOrders() {
                       {/*🟢 Items List in Order */}
                       {order.items.map((item, index) => (
                         <div key={item.id} className="flex items-center">
+                          {/* {console.log(item)} */}
                           <img
                             className="w-10 h-10 rounded-full"
-                            src={item.thumbnail}
+                            src={item.product.thumbnail}
                           ></img>
-                          <span>{item.title}</span>
+                          <span>{item.product.title}</span>
                           <br />
                         </div>
                       ))}
@@ -180,6 +212,7 @@ function AdminOrders() {
                     <td className="py-3 px-6 text-left">
                       {order.items.map((item, index) => (
                         <div key={item.id} className="flex items-center">
+                          {/* {console.log(item)} */}
                           <span className="text-gray-600 font-semibold">
                             {item.quantity}
                           </span>
@@ -192,7 +225,7 @@ function AdminOrders() {
                       {order.items.map((item, index) => (
                         <div key={item.id} className="flex items-center">
                           <span className="text-gray-600 font-semibold">
-                            ${discountedPrice(item)}
+                            ${discountedPrice(item.product)}
                           </span>
                           <br />
                         </div>
@@ -209,7 +242,7 @@ function AdminOrders() {
                       {order.id === editableOrderId ? (
                         <select
                           className="mt-2 w-full rounded-md border border-gray-300 bg-white py-1 px-2 text-sm text-gray-800 shadow-sm transition duration-150 ease-in-out focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                          onChange={(e) => handleUpdate(e, order)}
+                          onChange={(e) => handleOrderStatus(e, order)}
                           value={order.status}
                         >
                           <option value="pending">Pending</option>

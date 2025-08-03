@@ -36,6 +36,7 @@ export function fetchAllOrders({ sort, pagination }) {
     // http://localhost:8080/orders?_page=1&_per_page=10  => pagination
     const response = await fetch(`http://localhost:8080/orders?${queryString}`);
     const result = await response.json();
+    // console.log(result)
     resolve({ data: { orders: result.data, totalOrders: +result.items } });
   });
 }

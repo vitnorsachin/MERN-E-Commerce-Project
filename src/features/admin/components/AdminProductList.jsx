@@ -114,9 +114,9 @@ export default function AdminProductList() {
   };
 
   useEffect(() => {
-    const pagination = { _page: page, _per_page: ITEMS_PER_PAGE }; // for json-server(data.json file) as backend
-    // const pagination = { _page: page, _limit: ITEMS_PER_PAGE }; // for mongodb as backend
-    dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination }));
+    // const pagination = { _page: page, _per_page: ITEMS_PER_PAGE }; // for json-server(data.json file) as backend
+    const pagination = { _page: page, _limit: ITEMS_PER_PAGE }; // for mongodb as backend
+    dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination, admin:true }));
   }, [dispatch, filter, sort, page]);
 
   useEffect(() => {
@@ -485,7 +485,15 @@ function ProductGrid({ products }) {
                         </div>
                       </div>
                     </Link>
-                    <div>
+                    <div className="mb-2 mt-5">
+                    <Link
+                      to={`/admin/product-form/edit/${product.id}`}
+                      className="text-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+                    >
+                      Edit Product
+                    </Link>
+                  </div>
+                    <div className="mt-3">
                       {product.deleted && (
                         <div>
                           <p className="text-sm text-red-500 mt-1 font-medium">
@@ -501,14 +509,6 @@ function ProductGrid({ products }) {
                         </div>
                       )}
                     </div>
-                  </div>
-                  <div className="mt-4">
-                    <Link
-                      to={`/admin/product-form/edit/${product.id}`}
-                      className="text-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
-                    >
-                      Edit Product
-                    </Link>
                   </div>
                 </div>
               ))}

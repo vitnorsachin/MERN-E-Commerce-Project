@@ -85,7 +85,7 @@ export function UserOrders() {
                       <h3>
                         <Link to={"/"}>{item.product.title}</Link>
                       </h3>
-                      <p className="ml-4 bg-green-300 px-2 py-1 rounded">
+                      <p className="ml-4 bg-green-200 px-2 py-1 rounded">
                         ${discountedPrice(item.product)}
                       </p>
                     </div>
@@ -103,7 +103,7 @@ export function UserOrders() {
             <div className="border-t border-gray-200 pt-4 pb-6">
               <div className="flex justify-between text-base font-medium text-gray-900 ">
                 <p>Subtotal :</p>
-                <p className="bg-green-400 px-2 py-1 rounded">
+                <p className="bg-green-300 px-2 py-1 rounded">
                   ${order.totalAmount}.00
                 </p>
               </div>

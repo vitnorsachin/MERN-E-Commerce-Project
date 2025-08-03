@@ -12,10 +12,12 @@ import {
 import {
   addToCartAsync,
   resetItemStatus,
+  selectItems,
   selectItemStatus,
 } from "../../cart/cartSlice";
 import { selectLoggedInUser } from "../../auth/authSlice";
 import { discountedPrice } from "../../../app/constants";
+import { toast } from "react-toastify";
 
 // TODO : In server data we will add colors, sizes, highlights etc. to each product
 const colors = [
@@ -53,13 +55,25 @@ export default function AdminProductDetail() {
   const dispatch = useDispatch();
   const product = useSelector(selectedProductById);
   const user = useSelector(selectLoggedInUser);
+  console.log(product);
   const params = useParams();
+  const items = useSelector(selectItems);
+  
 
   const handleCart = (e) => {
     e.preventDefault();
-    const newItem = { ...product, quantity: 1, user: user.id };
-    delete newItem["id"];
-    dispatch(addToCartAsync(newItem));
+    if (items.findIndex((item) => item.product.id === product.id) < 0) {
+      const newItem = {
+        product: product.id,
+        quantity: 1,
+        user: user.id,
+      };
+      dispatch(addToCartAsync(newItem));
+    } else {
+      toast.warn("Item already added", {
+        style: { fontSize: "0.9rem", fontWeight: "normal", color: "black" },
+      });
+    }
   };
 
   useEffect(() => {
@@ -69,17 +83,17 @@ export default function AdminProductDetail() {
   // logic for showing "Item added to cart" message
   const navigate = useNavigate();
   const itemStatus = useSelector(selectItemStatus);
-  const [showMessage, setShowMessage] = useState(false);
   useEffect(() => {
     if (itemStatus === "success") {
-      setShowMessage(true);
+      toast.success("Item added", {
+        style: { fontSize: "0.9rem", fontWeight: "bold" },
+      });
       const timer = setTimeout(() => {
-        setShowMessage(false);
-        dispatch(resetItemStatus()); // ✅ reset Redux state
-      }, 1000);
+        dispatch(resetItemStatus());
+      }, 100);
       return () => clearTimeout(timer);
     }
-  }, [itemStatus]);
+  }, [itemStatus, dispatch]);
 
   return (
     <div className="bg-white">
@@ -234,15 +248,6 @@ export default function AdminProductDetail() {
                     </RadioGroup>
                   </fieldset>
                 </div>
-
-                {/* ✅ Item add to cart Success Message */}
-                {showMessage && (
-                  <div className="col-span-full">
-                    <div className="my-8 rounded-md bg-green-100 p-3 border border-green-700 text-green-700 text-center font-medium">
-                      ✅ Item added to your cart
-                    </div>
-                  </div>
-                )}
 
                 <div className="mt-8">
                   {product.deleted && (
