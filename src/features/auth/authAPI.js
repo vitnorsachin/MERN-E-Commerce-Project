@@ -27,7 +27,7 @@ export function checkUser(loginInfo) {
         // resolve(data[0]); // This take my 2 hours to find error {data : data[0]} when i access then need to (user.data.email) like this but now i can access directly {user.email}
         resolve(data);
       } else {
-        const error = await response.json();
+        const error = await response.text();
         reject(error);
       }
     } catch (error) {

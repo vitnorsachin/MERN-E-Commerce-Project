@@ -15,7 +15,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
 import { selectItems } from "../cart/cartSlice";
-import { selectLoggedInUser } from "../auth/authSlice";
+import { selectUserInfo } from "../user/userSlice";
 // import { increment, selectCount } from "../counter/counterSlice";
 
 const user = {
@@ -43,11 +43,12 @@ const NavBar = ({ children }) => {
   // const count = useSelector(selectCount);
   // const dispatch = useDispatch();
   const items = useSelector(selectItems);
-  const user = useSelector(selectLoggedInUser);
-  if (!user) {
+  const userInfo = useSelector(selectUserInfo);
+
+  if (!userInfo) {
     return <Navigate to="/" replace />;
   }
-  const userFirstChar = user ? user.email.charAt(0).toUpperCase() : null;
+  const userFirstChar = userInfo ? userInfo.email.charAt(0).toUpperCase() : null;
 
   return (
     <>
@@ -68,7 +69,7 @@ const NavBar = ({ children }) => {
                 <div className="hidden md:block">
                   <div className="ml-10 flex items-baseline space-x-4">
                     {navigation.map((item) =>
-                      item[user.role] ? (
+                      item[userInfo.role] ? (
                         <Link
                           key={item.name}
                           to={item.link}
@@ -156,7 +157,7 @@ const NavBar = ({ children }) => {
           <DisclosurePanel className="md:hidden">
             <div className="space-y-1 px-2 pt-2 pb-3 sm:px-3">
               {navigation.map((item) =>
-                item[user.role] ? (
+                item[userInfo.role] ? (
                   <Link
                     key={item.name}
                     to={item.link}
@@ -189,10 +190,10 @@ const NavBar = ({ children }) => {
                 <div className="ml-3">
                   <div className="text-base/5 font-medium text-white">
                     {/* this should come from userInfo */}
-                    {user.name}
+                    {userInfo.name}
                   </div>
                   <div className="text-sm font-medium text-gray-400">
-                    {user.email}
+                    {userInfo.email}
                   </div>
                 </div>
                 <button

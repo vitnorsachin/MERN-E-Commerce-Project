@@ -5,7 +5,7 @@ import {
   fetchProductByIdAsync,
   selectBrands,
   selectCategories,
-  selectedProductById,
+  selectProductById,
   updateProductAsync,
 } from "../../product/productSlice";
 import { useForm } from "react-hook-form";
@@ -19,7 +19,7 @@ const ProductForm = () => {
   const categories = useSelector(selectCategories);
   const dispatch = useDispatch();
   const params = useParams();
-  const selectedProduct = useSelector(selectedProductById);
+  const selectedProduct = useSelector(selectProductById);
   const [openModal, setOpenModal] = useState(null);
 
   const {

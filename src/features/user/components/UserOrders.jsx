@@ -2,37 +2,40 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchLoggedInUserOrdersAsync,
-  selectUserInfo,
+  selectUserInfoStatus,
   selectUserOrders,
 } from "../userSlice";
 import { InboxIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { discountedPrice } from "../../../app/constants";
+import { GridLoader } from "react-spinners";
 
 export function UserOrders() {
   const dispatch = useDispatch();
-  const userInfo = useSelector(selectUserInfo);
   const orders = useSelector(selectUserOrders);
-  // console.log(orders)
+  // console.log(orders);
+  const status = useSelector(selectUserInfoStatus);
 
   useEffect(() => {
-    if (userInfo?.id) {
-      dispatch(fetchLoggedInUserOrdersAsync(userInfo.id));
-    }
-  }, [dispatch, userInfo?.id]);
-
-  if (!orders) {
-    return (
-      <div className="text-center py-10 text-gray-500">
-        Loading your orders...
-      </div>
-    );
-  }
+    dispatch(fetchLoggedInUserOrdersAsync());
+  }, [dispatch]);
 
   return (
     <>
-      <h2 className="font-semibold text-2xl mb-4">My Orders</h2>
-      {orders.length === 0 ? (
+      <h2 className="font-semibold text-2xl mb-4">My Orders</h2>      
+      {status === "loading" ? (
+        <div className="col-span-2 mt-20 flex justify-center items-center w-full">
+          <GridLoader
+            color="#4639fa"
+            loading={true}
+            margin={10}
+            size={25}
+            speedMultiplier={2}
+          />
+        </div>
+      ) : null}
+      
+      {orders?.length === 0 ? (
         <section
           aria-label="No orders"
           className="flex flex-col items-center justify-center text-center mt-20"
@@ -52,7 +55,7 @@ export function UserOrders() {
           </Link>
         </section>
       ) : (
-        orders.map((order) => (
+        orders?.map((order) => (
           <article
             key={order.id}
             className="mx-auto mb-12 bg-white shadow-lg rounded-xl border border-gray-200 max-w-7xl px-4 sm:px-6 lg:px-10"
@@ -122,10 +125,10 @@ export function UserOrders() {
                       {order.selectedAddress.name}
                     </p>
                     <p className="text-sm text-gray-800">
-                      {order.selectedAddress.street}
+                      {order.selectedAddress.street},
                     </p>
                     <p className="text-sm text-gray-600">
-                      {order.selectedAddress.street}
+                      {order.selectedAddress.city},
                     </p>
                   </div>
                   <div>
@@ -133,7 +136,10 @@ export function UserOrders() {
                       Phone: {order.selectedAddress.phone}
                     </p>
                     <p className="text-sm text-gray-600">
-                      {order.selectedAddress.state}
+                      PinCode: {order.selectedAddress.pinCode},
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {order.selectedAddress.state}.
                     </p>
                   </div>
                 </div>

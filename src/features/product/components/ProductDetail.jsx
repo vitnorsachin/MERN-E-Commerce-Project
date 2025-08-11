@@ -4,14 +4,13 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchProductByIdAsync, selectedProductById } from "../productSlice";
+import { fetchProductByIdAsync, selectProductById } from "../productSlice";
 import {
   addToCartAsync,
   resetItemStatus,
   selectItems,
   selectItemStatus,
 } from "../../cart/cartSlice";
-import { selectLoggedInUser } from "../../auth/authSlice";
 import { discountedPrice } from "../../../app/constants";
 import { toast } from "react-toastify";
 
@@ -49,19 +48,18 @@ function classNames(...classes) {
 export default function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const dispatch = useDispatch();
-  const product = useSelector(selectedProductById);
+  const product = useSelector(selectProductById);
   // console.log(product);
-  const user = useSelector(selectLoggedInUser);
   const params = useParams();
   const items = useSelector(selectItems);
 
   const handleCart = (e) => {
     e.preventDefault();
     if (items.findIndex((item) => item.product.id === product.id) < 0) {
+      // console.log({ items, product });
       const newItem = {
         product: product.id,
-        quantity: 1,
-        user: user.id,
+        quantity: 1
       };
       dispatch(addToCartAsync(newItem));
     } else {

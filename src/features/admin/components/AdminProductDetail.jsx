@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   fetchProductByIdAsync,
-  selectedProductById,
+  selectProductById,
 } from "../../product/productSlice";
 import {
   addToCartAsync,
@@ -15,7 +15,6 @@ import {
   selectItems,
   selectItemStatus,
 } from "../../cart/cartSlice";
-import { selectLoggedInUser } from "../../auth/authSlice";
 import { discountedPrice } from "../../../app/constants";
 import { toast } from "react-toastify";
 
@@ -53,8 +52,7 @@ function classNames(...classes) {
 export default function AdminProductDetail() {
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const dispatch = useDispatch();
-  const product = useSelector(selectedProductById);
-  const user = useSelector(selectLoggedInUser);
+  const product = useSelector(selectProductById);
   console.log(product);
   const params = useParams();
   const items = useSelector(selectItems);
@@ -63,11 +61,8 @@ export default function AdminProductDetail() {
   const handleCart = (e) => {
     e.preventDefault();
     if (items.findIndex((item) => item.product.id === product.id) < 0) {
-      const newItem = {
-        product: product.id,
-        quantity: 1,
-        user: user.id,
-      };
+      // const newItem = { product: product.id, quantity: 1, user: user };
+      const newItem = { ...product, quantity: 1 }; // 🟢 new changes base on video
       dispatch(addToCartAsync(newItem));
     } else {
       toast.warn("Item already added", {
