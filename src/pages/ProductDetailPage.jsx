@@ -7,8 +7,8 @@ const ProductDetailPage = () => {
     <div>
       <NavBar>
         <ProductDetail></ProductDetail>
-        <Footer></Footer>
       </NavBar>
+      <Footer></Footer>
     </div>
   );
 };

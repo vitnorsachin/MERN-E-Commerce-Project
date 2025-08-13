@@ -4,7 +4,7 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchProductByIdAsync, selectProductById } from "../productSlice";
+import { fetchProductByIdAsync,selectProductById,selectProductListStatus,} from "../productSlice";
 import {
   addToCartAsync,
   resetItemStatus,
@@ -13,6 +13,7 @@ import {
 } from "../../cart/cartSlice";
 import { discountedPrice } from "../../../app/constants";
 import { toast } from "react-toastify";
+import { GridLoader } from "react-spinners";
 
 // TODO : In server data we will add colors, sizes, highlights etc. to each product
 const colors = [
@@ -52,6 +53,7 @@ export default function ProductDetail() {
   // console.log(product);
   const params = useParams();
   const items = useSelector(selectItems);
+  const productStatus = useSelector(selectProductListStatus);
 
   const handleCart = (e) => {
     e.preventDefault();
@@ -59,7 +61,7 @@ export default function ProductDetail() {
       // console.log({ items, product });
       const newItem = {
         product: product.id,
-        quantity: 1
+        quantity: 1,
       };
       dispatch(addToCartAsync(newItem));
     } else {
@@ -73,7 +75,6 @@ export default function ProductDetail() {
     dispatch(fetchProductByIdAsync(params.id));
   }, [dispatch, params.id]);
 
-  
   const navigate = useNavigate();
   const itemStatus = useSelector(selectItemStatus);
   useEffect(() => {
@@ -90,244 +91,263 @@ export default function ProductDetail() {
 
   return (
     <div className="bg-white">
-      {product && (
-        <div className="pt-6">
-          {/* Image gallery */}
-          <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-8 lg:px-8">
-            <img
-              src={product.images[0]}
-              alt={product.images.title}
-              className="row-span-2 aspect-5/2 size-full rounded-lg object-contain "
-            />
-            <img
-              src={product.images[1]}
-              alt={product.images.title}
-              className="col-start-2 aspect-5/2 size-full rounded-lg object-contain max-lg:hidden"
-            />
-            <img
-              src={product.images[2]}
-              alt={product.images.title}
-              className="col-start-2 row-start-2 aspect-5/2 size-full rounded-lg object-contain max-lg:hidden"
-            />
-          </div>
-
-          {/* Product info */}
-          <div className="mx-auto max-w-2xl px-4 pt-10 pb-16 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto_auto_1fr] lg:gap-x-8 lg:px-8 lg:pt-16 lg:pb-24">
-            <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                {product.title}
-              </h1>
-            </div>
-
-            {/* Options */}
-            <div className="mt-4 lg:row-span-3 lg:mt-0">
-              <h2 className="sr-only">Product information</h2>
-              <p className="text-3xl tracking-tight text-gray-900">
-                ${discountedPrice(product)}
-              </p>
-              <p className="text-2xl line-through font-medium text-gray-500">
-                ${product.price}
-              </p>
-
-              {/* Reviews */}
-              <div className="mt-6">
-                <h3 className="sr-only">Reviews</h3>
-                <div className="flex items-center">
-                  <div className="flex items-center">
-                    {[0, 1, 2, 3, 4].map((rating) => (
-                      <StarIcon
-                        key={rating}
-                        aria-hidden="true"
-                        className={classNames(
-                          product.rating > rating
-                            ? "text-gray-900"
-                            : "text-gray-200",
-                          "size-5 shrink-0"
-                        )}
-                      />
-                    ))}
-                  </div>
-                  <p className="sr-only">{product.rating} out of 5 stars</p>
-                </div>
-              </div>
-
-              <form className="mt-10">
-                {/* Colors */}
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">Color</h3>
-                  <fieldset aria-label="Choose a color" className="mt-4">
-                    <div className="flex items-center gap-x-3">
-                      {colors.map((option, optionIdx) => (
-                        <div
-                          key={optionIdx}
-                          className="flex rounded-full outline -outline-offset-1 outline-black/10"
-                        >
-                          <input
-                            defaultValue={option.id}
-                            // defaultChecked={option.id === product.colors[0].id}
-                            name="color-choice"
-                            type="radio"
-                            aria-label={option.name}
-                            className={classNames(
-                              option.classes,
-                              "size-8 appearance-none rounded-full forced-color-adjust-none checked:outline-2 checked:outline-offset-2 focus-visible:outline-3 focus-visible:outline-offset-3"
-                            )}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </fieldset>
-                </div>
-
-                {/* Sizes */}
-                <div className="mt-10">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-medium text-gray-900">Size</h3>
-                    <a
-                      href="#"
-                      className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                    >
-                      Size guide
-                    </a>
-                  </div>
-
-                  <fieldset aria-label="Choose a size" className="mt-4">
-                    <RadioGroup
-                      value={selectedSize}
-                      onChange={setSelectedSize}
-                      className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4"
-                    >
-                      {sizes.map((size) => (
-                        <Radio
-                          key={size.name}
-                          value={size}
-                          disabled={!size.inStock}
-                          className={classNames(
-                            size.inStock
-                              ? "cursor-pointer bg-white text-gray-900 shadow-xs"
-                              : "cursor-not-allowed bg-gray-50 text-gray-200",
-                            "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-hidden data-focus:ring-2 data-focus:ring-indigo-500 sm:flex-1 sm:py-6"
-                          )}
-                        >
-                          <span>{size.name}</span>
-                          {size.inStock ? (
-                            <span
-                              aria-hidden="true"
-                              className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent group-data-checked:border-indigo-500 group-data-focus:border"
-                            />
-                          ) : (
-                            <span
-                              aria-hidden="true"
-                              className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
-                            >
-                              <svg
-                                stroke="currentColor"
-                                viewBox="0 0 100 100"
-                                preserveAspectRatio="none"
-                                className="absolute inset-0 size-full stroke-2 text-gray-200"
-                              >
-                                <line
-                                  x1={0}
-                                  x2={100}
-                                  y1={100}
-                                  y2={0}
-                                  vectorEffect="non-scaling-stroke"
-                                />
-                              </svg>
-                            </span>
-                          )}
-                        </Radio>
-                      ))}
-                    </RadioGroup>
-                  </fieldset>
-                </div>
-
-                <div className="mt-8">
-                  {product.deleted && (
-                    <div>
-                      <p className="text-xl font-bold text-red-500 mt-1">
-                        Product is Deleted
-                      </p>
-                    </div>
-                  )}
-                  {product.stock <= 0 && (
-                    <div>
-                      <p className="text-xl font-bold text-red-500 mt-1">
-                        Out of Stock
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {!product.deleted && !product.stock <= 0 && (
-                  <button
-                    type="button"
-                    onClick={handleCart}
-                    className="cursor-pointer w-full mt-8 flex items-center justify-center rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                  >
-                    🛒 Add to Cart
-                  </button>
-                )}
-
-                <button
-                  type="button"
-                  onClick={() => navigate("/cart")}
-                  className="cursor-pointer w-full mt-5 flex items-center justify-center rounded-md bg-gray-100 px-6 py-3 text-base font-semibold text-gray-800 shadow-sm hover:bg-gray-200 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400"
-                >
-                  🛍️ Go to Cart
-                </button>
-
-                <div className="mt-6 flex justify-center text-sm text-gray-500">
-                  <button
-                    type="button"
-                    onClick={() => navigate("/")}
-                    className="cursor-pointer text-[15px] my-2 inline-flex items-center gap-2 font-bold text-indigo-600 hover:text-indigo-500 transition-colors duration-200"
-                  >
-                    Continue Shopping
-                    <ArrowRightIcon className="h-5 w-5 text-indigo-600" />
-                  </button>
-                </div>
-              </form>
-            </div>
-
-            {/* Description and details */}
-            <div className="py-5 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pt-6 lg:pr-8 lg:pb-16">
-              <div>
-                <h3 className="sr-only">Description</h3>
-
-                <div className="space-y-6">
-                  <p className="text-base text-gray-900">
-                    {product.description}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-10">
-                <h3 className="text-sm font-medium text-gray-900">
-                  Highlights
-                </h3>
-
-                <div className="mt-4">
-                  <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                    {highlights.map((highlight) => (
-                      <li key={highlight} className="text-gray-400">
-                        <span className="text-gray-600">{highlight}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              <div className="mt-10">
-                <h2 className="text-sm font-medium text-gray-900">Details</h2>
-
-                <div className="mt-4 space-y-6">
-                  <p className="text-sm text-gray-600">{product.description}</p>
-                </div>
-              </div>
-            </div>
-          </div>
+      {productStatus === "loading" ? (
+        <div className="col-span-2  flex justify-center items-center w-full h-1/2">
+          <GridLoader
+            color="#d33ff4"
+            loading={true}
+            margin={10}
+            size={25}
+            speedMultiplier={2}
+          />
         </div>
+      ) : (
+        product && (
+          <div className="pt-6">
+            {/* Image gallery */}
+            <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-8 lg:px-8">
+              <img
+                src={product.images[0]}
+                alt={product.images.title}
+                className="row-span-2 aspect-5/2 size-full rounded-lg object-contain "
+              />
+              <img
+                src={product.images[1]}
+                alt={product.images.title}
+                className="col-start-2 aspect-5/2 size-full rounded-lg object-contain max-lg:hidden"
+              />
+              <img
+                src={product.images[2]}
+                alt={product.images.title}
+                className="col-start-2 row-start-2 aspect-5/2 size-full rounded-lg object-contain max-lg:hidden"
+              />
+            </div>
+
+            {/* Product info */}
+            <div className="mx-auto max-w-2xl px-4 pt-10 pb-16 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto_auto_1fr] lg:gap-x-8 lg:px-8 lg:pt-16 lg:pb-24">
+              <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
+                <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                  {product.title}
+                </h1>
+              </div>
+
+              {/* Options */}
+              <div className="mt-4 lg:row-span-3 lg:mt-0">
+                <h2 className="sr-only">Product information</h2>
+                <p className="text-3xl tracking-tight text-gray-900">
+                  ${discountedPrice(product)}
+                </p>
+                <p className="text-2xl line-through font-medium text-gray-500">
+                  ${product.price}
+                </p>
+
+                {/* Reviews */}
+                <div className="mt-6">
+                  <h3 className="sr-only">Reviews</h3>
+                  <div className="flex items-center">
+                    <div className="flex items-center">
+                      {[0, 1, 2, 3, 4].map((rating) => (
+                        <StarIcon
+                          key={rating}
+                          aria-hidden="true"
+                          className={classNames(
+                            product.rating > rating
+                              ? "text-gray-900"
+                              : "text-gray-200",
+                            "size-5 shrink-0"
+                          )}
+                        />
+                      ))}
+                    </div>
+                    <p className="sr-only">{product.rating} out of 5 stars</p>
+                  </div>
+                </div>
+
+                <form className="mt-10">
+                  {/* Colors */}
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-900">Color</h3>
+                    <fieldset aria-label="Choose a color" className="mt-4">
+                      <div className="flex items-center gap-x-3">
+                        {colors.map((option, optionIdx) => (
+                          <div
+                            key={optionIdx}
+                            className="flex rounded-full outline -outline-offset-1 outline-black/10"
+                          >
+                            <input
+                              defaultValue={option.id}
+                              // defaultChecked={option.id === product.colors[0].id}
+                              name="color-choice"
+                              type="radio"
+                              aria-label={option.name}
+                              className={classNames(
+                                option.classes,
+                                "size-8 appearance-none rounded-full forced-color-adjust-none checked:outline-2 checked:outline-offset-2 focus-visible:outline-3 focus-visible:outline-offset-3"
+                              )}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </fieldset>
+                  </div>
+
+                  {/* Sizes */}
+                  <div className="mt-10">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-medium text-gray-900">
+                        Size
+                      </h3>
+                      <a
+                        href="#"
+                        className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                      >
+                        Size guide
+                      </a>
+                    </div>
+
+                    <fieldset aria-label="Choose a size" className="mt-4">
+                      <RadioGroup
+                        value={selectedSize}
+                        onChange={setSelectedSize}
+                        className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4"
+                      >
+                        {sizes.map((size) => (
+                          <Radio
+                            key={size.name}
+                            value={size}
+                            disabled={!size.inStock}
+                            className={classNames(
+                              size.inStock
+                                ? "cursor-pointer bg-white text-gray-900 shadow-xs"
+                                : "cursor-not-allowed bg-gray-50 text-gray-200",
+                              "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-hidden data-focus:ring-2 data-focus:ring-indigo-500 sm:flex-1 sm:py-6"
+                            )}
+                          >
+                            <span>{size.name}</span>
+                            {size.inStock ? (
+                              <span
+                                aria-hidden="true"
+                                className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent group-data-checked:border-indigo-500 group-data-focus:border"
+                              />
+                            ) : (
+                              <span
+                                aria-hidden="true"
+                                className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
+                              >
+                                <svg
+                                  stroke="currentColor"
+                                  viewBox="0 0 100 100"
+                                  preserveAspectRatio="none"
+                                  className="absolute inset-0 size-full stroke-2 text-gray-200"
+                                >
+                                  <line
+                                    x1={0}
+                                    x2={100}
+                                    y1={100}
+                                    y2={0}
+                                    vectorEffect="non-scaling-stroke"
+                                  />
+                                </svg>
+                              </span>
+                            )}
+                          </Radio>
+                        ))}
+                      </RadioGroup>
+                    </fieldset>
+                  </div>
+
+                  <div className="mt-8">
+                    {product.deleted && (
+                      <div>
+                        <p className="text-xl font-bold text-red-500 mt-1">
+                          Product is Deleted
+                        </p>
+                      </div>
+                    )}
+                    {product.stock <= 0 && (
+                      <div>
+                        <p className="text-xl font-bold text-red-500 mt-1">
+                          Out of Stock
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {!product.deleted && !product.stock <= 0 && (
+                    <button
+                      type="button"
+                      onClick={handleCart}
+                      className="cursor-pointer w-full mt-8 flex items-center justify-center rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                      🛒 Add to Cart
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => navigate("/cart")}
+                    className="cursor-pointer w-full mt-5 flex items-center justify-center rounded-md bg-gray-100 px-6 py-3 text-base font-semibold text-gray-800 shadow-sm hover:bg-gray-200 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400"
+                  >
+                    🛍️ Go to Cart
+                  </button>
+
+                  <div className="mt-6 flex justify-center text-sm text-gray-500">
+                    <button
+                      type="button"
+                      onClick={() => navigate("/")}
+                      className="cursor-pointer text-[15px] my-2 inline-flex items-center gap-2 font-bold text-indigo-600 hover:text-indigo-500 transition-colors duration-200"
+                    >
+                      Continue Shopping
+                      <ArrowRightIcon className="h-5 w-5 text-indigo-600" />
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Description and details */}
+              <div className="py-5 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pt-6 lg:pr-8 lg:pb-16">
+                <div>
+                  <h3 className="sr-only">Description</h3>
+
+                  <div className="space-y-6">
+                    <p className="text-base text-gray-900">
+                      {product.description}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-10">
+                  <h3 className="text-sm font-medium text-gray-900">
+                    Highlights
+                  </h3>
+
+                  <div className="mt-4">
+                    <ul
+                      role="list"
+                      className="list-disc space-y-2 pl-4 text-sm"
+                    >
+                      {highlights.map((highlight) => (
+                        <li key={highlight} className="text-gray-400">
+                          <span className="text-gray-600">{highlight}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-10">
+                  <h2 className="text-sm font-medium text-gray-900">Details</h2>
+
+                  <div className="mt-4 space-y-6">
+                    <p className="text-sm text-gray-600">
+                      {product.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
       )}
     </div>
   );

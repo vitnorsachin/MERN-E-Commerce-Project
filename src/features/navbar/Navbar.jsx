@@ -45,14 +45,14 @@ const NavBar = ({ children }) => {
   const items = useSelector(selectItems);
   const userInfo = useSelector(selectUserInfo);
 
-  if (!userInfo) {
-    return <Navigate to="/" replace />;
-  }
+  // if (!userInfo) { // & {userInfo && <div>...</div> this error take my 4 hours : relad page then it send to home routes "/"
+  //   return <Navigate to="/" replace />;
+  // }
   const userFirstChar = userInfo ? userInfo.email.charAt(0).toUpperCase() : null;
 
   return (
     <>
-      <div className="min-h-full">
+      {userInfo && <div className="min-h-full">
         <Disclosure as="nav" className="bg-gray-800 sticky top-0 z-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
@@ -239,7 +239,7 @@ const NavBar = ({ children }) => {
             {children}
           </div>
         </main>
-      </div>
+      </div>}
     </>
   );
 };

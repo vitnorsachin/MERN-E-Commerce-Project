@@ -9,7 +9,7 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import Protected from "./features/auth/components/Protected";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchItemsByUserIdAsync } from "./features/cart/cartSlice";
-import { selectLoggedInUser } from "./features/auth/authSlice";
+import { checkAuthAsync, selectLoggedInUser, selectUserChecked } from "./features/auth/authSlice";
 import { useEffect } from "react";
 import PageNotFound from "./pages/404";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
@@ -75,11 +75,11 @@ let router = createBrowserRouter([
   },
   {
     path: "/orders",
-    element: <UserOrdersPage/>,
+    element: <Protected><UserOrdersPage/></Protected>,
   },
   {
     path: "/profile",
-    element: <UserProfilePage/>,
+    element:<Protected><UserProfilePage/></Protected>,
   },
   {
     path: "/logout",
@@ -98,6 +98,12 @@ let router = createBrowserRouter([
 function App() {
   const dispatch = useDispatch();
   const user = useSelector(selectLoggedInUser);
+  const userChecked = useSelector(selectUserChecked);
+
+  useEffect(() => {
+    dispatch(checkAuthAsync());
+  }, [dispatch])
+  
   
   useEffect(() => {
     if(user){
@@ -107,12 +113,11 @@ function App() {
     }
   }, [dispatch, user])
   
-
+  
   return (
     <>
       <div>
-        <RouterProvider router={router} />
-        {/* Link must be inside othe Provider */}
+        {userChecked && (<RouterProvider router={router} />)}
       </div>
     </>
   );

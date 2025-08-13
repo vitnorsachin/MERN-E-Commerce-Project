@@ -14,7 +14,7 @@ export function createUser(userData) {
   });
 }
 
-export function checkUser(loginInfo) {
+export function loginUser(loginInfo) {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await fetch("http://localhost:8080/auth/login", {
@@ -25,6 +25,23 @@ export function checkUser(loginInfo) {
       if (response.ok) {
         const data = await response.json();
         // resolve(data[0]); // This take my 2 hours to find error {data : data[0]} when i access then need to (user.data.email) like this but now i can access directly {user.email}
+        resolve(data);
+      } else {
+        const error = await response.text();
+        reject(error);
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+export function checkAuth() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch("http://localhost:8080/auth/check");
+      if (response.ok) {
+        const data = await response.json();
         resolve(data);
       } else {
         const error = await response.text();
